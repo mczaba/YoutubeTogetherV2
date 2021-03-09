@@ -1,20 +1,37 @@
 <template>
-  <form action="">
-    <input
-      v-model="room"
-      type="text"
-      label="Nom du salon"
-      placeholder="Nom du salon"
-    />
-    <input
-      v-model="url"
-      type="text"
-      label="url de la video"
-      placeholder="url de la video"
-    />
-    <input v-model="nickname" type="text" label="pseudo" placeholder="pseudo" />
-    <button @click.prevent="submit">submit</button>
-  </form>
+  <div class="app">
+    <h1>Créer un salon</h1>
+    <form action="">
+      <div>
+        <label for="room">Nom du salon</label>
+        <input
+          v-model="room"
+          type="text"
+          name="room"
+          placeholder="Nom du salon"
+        />
+      </div>
+      <div>
+        <label for="url">URL de la vidéo</label>
+        <input
+          v-model="url"
+          type="text"
+          name="url"
+          placeholder="url de la video"
+        />
+      </div>
+      <div>
+        <label for="nickname">Votre pseudo</label>
+        <input
+          v-model="nickname"
+          type="text"
+          name="nickname"
+          placeholder="pseudo"
+        />
+      </div>
+      <button class="button" @click.prevent="submit">Créer le salon</button>
+    </form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -50,3 +67,25 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+form {
+  height: 300px;
+  width: 40%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  div {
+    width: 100%;
+    input {
+      width: 100%;
+      margin-top: 5px;
+    }
+  }
+}
+h1 {
+  margin: 15px;
+}
+</style>

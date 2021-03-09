@@ -1,27 +1,43 @@
 <template>
-  <div>
+  <div id="app">
     <nav>
-      <h1>link</h1>
+      <h1>cc</h1>
     </nav>
     <Nuxt />
   </div>
 </template>
 
 <style>
-html {
+* {
+  margin: 0;
+}
+html,
+body {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  height: 100%;
+  --background-nav: #2d3142;
+  --background-main: #4f5d75;
+  --background-button: #bfc0c0;
+  --text-nav: #ffffff;
+  --text-main: #ffffff;
+  --text-header: #ef8354;
+  --text-button: #2d3142;
+  background-color: var(--background-main);
+  color: var(--text-main);
+}
+
+#app {
+  height: 100%;
 }
 
 nav {
-  background-color: #eeeeee75;
+  background-color: var(--background-nav);
+  color: var(--text-nav);
   height: 50px;
   position: sticky;
   top: 0;
@@ -29,39 +45,22 @@ nav {
   right: 0;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
+h1 {
+  text-align: center;
+  color: var(--text-header);
 }
 
-.button--green {
+.button {
   display: inline-block;
   border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
-}
-
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
-
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
+  font-size: 1rem;
+  border: 1px solid var(--text-header);
+  color: var(--background-main);
+  font-weight: bold;
+  background-color: var(--text-header);
   text-decoration: none;
   padding: 10px 30px;
   margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
+  cursor: pointer;
 }
 </style>

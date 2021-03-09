@@ -1,13 +1,13 @@
 <template>
-  <div class="container">
+  <div class="container app">
     <div>
       <Logo />
       <h1 class="title">YoutubeTogether</h1>
       <div class="links">
-        <a href="/create" rel="noopener noreferrer" class="button--green">
+        <a href="/create" rel="noopener noreferrer" class="button">
           Créer un salon
         </a>
-        <a href="/join" rel="noopener noreferrer" class="button--grey">
+        <a href="/join" rel="noopener noreferrer" class="button">
           Rejoindre un salon
         </a>
       </div>
@@ -37,7 +37,7 @@ export default Vue.extend({})
   display: block;
   font-weight: 300;
   font-size: 100px;
-  color: #35495e;
+  color: var(--text-main);
   letter-spacing: 1px;
 }
 
