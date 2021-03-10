@@ -29,6 +29,7 @@
           placeholder="pseudo"
         />
       </div>
+      <p v-if="error" class="error">{{ error }}</p>
       <button class="button" @click.prevent="submit">Créer le salon</button>
     </form>
   </div>
@@ -36,6 +37,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import axios from 'axios'
 
 export default Vue.extend({
   data() {
@@ -52,13 +54,14 @@ export default Vue.extend({
       fd.append('room', this.room)
       fd.append('url', this.url)
       fd.append('nickname', this.nickname)
-      fetch('/API/create', {
-        method: 'POST',
-        mode: 'cors',
-        body: fd,
-      })
-        .then(() => {
-          this.$router.push(`/room/${this.room}`)
+      axios
+        .post('/api/create', fd)
+        .then((res: any) => {
+          if (res.data === 'salon créé') {
+            this.$router.push(`/room/${this.room.replace(' ', '-')}`)
+          } else {
+            this.error = res.data
+          }
         })
         .catch((error: string) => {
           this.error = error

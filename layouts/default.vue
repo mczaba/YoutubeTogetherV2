@@ -63,4 +63,8 @@ h1 {
   margin-left: 15px;
   cursor: pointer;
 }
+.error {
+  color: var(--text-header);
+  font-weight: bold;
+}
 </style>
