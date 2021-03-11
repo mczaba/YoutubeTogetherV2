@@ -12,10 +12,10 @@
         />
       </div>
       <div class="controls">
-        <button class="button" @click="playVideo">
+        <button class="button" @click="socket.emit('playVideo')">
           <font-awesome-icon :icon="['fas', 'play']" />
         </button>
-        <button class="button" @click="pauseVideo">
+        <button class="button" @click="socket.emit('pauseVideo')">
           <font-awesome-icon :icon="['fas', 'pause']" />
         </button>
         <div id="bar" @click="switchTime">
@@ -42,29 +42,15 @@ let sendTimeInterval = null as any
 export default Vue.extend({
   filters: {
     formatTime(value: number): string {
+      let roundedValue = Math.round(value)
       let string = ''
-      const roundedValue = Math.round(value)
-      const seconds = roundedValue % 60
-      if (seconds < 10) {
-        string = ':0' + seconds
-      } else {
-        string = ':' + seconds
-      }
-      let minutes = (roundedValue - seconds) / 60
-      let hours = 0
-      if (minutes > 60) {
-        const minutesRest = minutes % 60
-        hours = (minutes - minutesRest) / 60
-        minutes = minutesRest
-        if (minutes < 10) {
-          string = `${hours}:0${minutes}` + string
-        } else {
-          string = `${hours}:${minutes}` + string
-        }
-      } else {
-        string = minutes + string
+      while (roundedValue > 60) {
+        string += `:${('0' + (roundedValue % 60)).slice(-2)}`
+        roundedValue = (roundedValue - (roundedValue % 60)) / 60
       }
       return string
+        ? `${roundedValue}${string}`
+        : `00:${('0' + roundedValue).slice(-2)}`
     },
   },
   data() {
@@ -106,11 +92,10 @@ export default Vue.extend({
         this.firstplay = false
         this.url = data.url
         this.currentTime = data.timer
-        if (this.currentTime !== 0) {
-          this.currentTime += 3
-        }
-        this.player.seekTo(this.currentTime, true)
-        this.player.playVideo()
+        setTimeout(() => {
+          this.currentTime += 5
+          this.player.seekTo(this.currentTime, true)
+        }, 5000)
       })
       this.socket.on('playVideo', () => {
         this.player.playVideo()
@@ -118,23 +103,15 @@ export default Vue.extend({
       this.socket.on('pauseVideo', () => {
         this.player.pauseVideo()
         clearInterval(sendTimeInterval)
+        console.log(sendTimeInterval)
       })
       this.socket.on('seekTo', (data: number) => {
         this.player.seekTo(data, true)
-        this.playVideo()
+        this.socket.emit('playVideo')
       })
     })
   },
   methods: {
-    send() {
-      this.socket.emit('msg', 'cc')
-    },
-    playVideo() {
-      this.socket.emit('playVideo')
-    },
-    pauseVideo() {
-      this.socket.emit('pauseVideo')
-    },
     getDuration() {
       this.player.getDuration().then((time: number) => {
         this.totalTime = time
@@ -149,6 +126,7 @@ export default Vue.extend({
           this.player.getCurrentTime().then((time: number) => {
             this.currentTime = time
             this.socket.emit('refreshTimer', time)
+            console.log('emited' + this.currentTime)
           })
         }, 1000)
       }
