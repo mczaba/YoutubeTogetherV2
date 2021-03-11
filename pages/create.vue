@@ -42,9 +42,9 @@ import axios from 'axios'
 export default Vue.extend({
   data() {
     return {
-      room: '',
-      url: '',
-      nickname: '',
+      room: 'test',
+      url: 'https://www.youtube.com/watch?v=RjoO6wPAaVI',
+      nickname: 'test',
       error: '',
     }
   },

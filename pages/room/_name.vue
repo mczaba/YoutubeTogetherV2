@@ -38,6 +38,7 @@ import Vue from 'vue'
 import { io } from 'socket.io-client'
 import axios from 'axios'
 let sendTimeInterval = null as any
+let syncInterval = null as any
 
 export default Vue.extend({
   filters: {
@@ -66,7 +67,6 @@ export default Vue.extend({
       },
       currentTime: 0,
       totalTime: 1,
-      firstplay: false,
     }
   },
   computed: {
@@ -89,13 +89,11 @@ export default Vue.extend({
         query: { room: this.$route.params.name },
       })
       this.socket.on('initialize', (data: any) => {
-        this.firstplay = false
         this.url = data.url
         this.currentTime = data.timer
-        setTimeout(() => {
-          this.currentTime += 5
-          this.player.seekTo(this.currentTime, true)
-        }, 5000)
+        syncInterval = setInterval(() => {
+          this.currentTime++
+        }, 1000)
       })
       this.socket.on('playVideo', () => {
         this.player.playVideo()
@@ -103,7 +101,7 @@ export default Vue.extend({
       this.socket.on('pauseVideo', () => {
         this.player.pauseVideo()
         clearInterval(sendTimeInterval)
-        console.log(sendTimeInterval)
+        sendTimeInterval = null
       })
       this.socket.on('seekTo', (data: number) => {
         this.player.seekTo(data, true)
@@ -118,17 +116,18 @@ export default Vue.extend({
       })
     },
     onPlaying() {
-      if (!this.firstplay) {
-        this.firstplay = true
-        this.player.seekTo(this.currentTime, true)
-      } else {
+      if (!sendTimeInterval) {
         sendTimeInterval = setInterval(() => {
           this.player.getCurrentTime().then((time: number) => {
             this.currentTime = time
             this.socket.emit('refreshTimer', time)
-            console.log('emited' + this.currentTime)
           })
         }, 1000)
+      }
+      if (syncInterval) {
+        this.player.seekTo(this.currentTime, true)
+        clearInterval(syncInterval)
+        syncInterval = null
       }
       this.getDuration()
     },

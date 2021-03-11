@@ -31,7 +31,6 @@ app.get('/init', (req: any, res: Response) => {
         const roomInfo = roomMap.get(room)
         roomInfo.timer = time
         roomMap.set(room, roomInfo)
-        console.log(roomMap.get(room).timer)
       })
     })
   }
