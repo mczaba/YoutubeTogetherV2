@@ -46,7 +46,7 @@ export default Vue.extend({
       let roundedValue = Math.round(value)
       let string = ''
       while (roundedValue > 60) {
-        string += `:${('0' + (roundedValue % 60)).slice(-2)}`
+        string = `:${('0' + (roundedValue % 60)).slice(-2)}${string}`
         roundedValue = (roundedValue - (roundedValue % 60)) / 60
       }
       return string
@@ -91,9 +91,11 @@ export default Vue.extend({
       this.socket.on('initialize', (data: any) => {
         this.url = data.url
         this.currentTime = data.timer
-        syncInterval = setInterval(() => {
-          this.currentTime++
-        }, 1000)
+        if (this.currentTime !== 0) {
+          syncInterval = setInterval(() => {
+            this.currentTime++
+          }, 1000)
+        }
       })
       this.socket.on('playVideo', () => {
         this.player.playVideo()
