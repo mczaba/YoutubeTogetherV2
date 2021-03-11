@@ -1,6 +1,35 @@
 <template>
-  <div>
-    <button @click="send">send</button>
+  <div id="view">
+    <div class="theater">
+      <div id="youtube-wrapper">
+        <youtube
+          ref="youtube"
+          :video-id="videoID"
+          :player-vars="playerVars"
+          width="1200"
+          height="675"
+          @playing="onPlaying"
+        />
+      </div>
+      <div class="controls">
+        <button class="button" @click="playVideo">
+          <font-awesome-icon :icon="['fas', 'play']" />
+        </button>
+        <button class="button" @click="pauseVideo">
+          <font-awesome-icon :icon="['fas', 'pause']" />
+        </button>
+        <div id="bar" @click="switchTime">
+          <div
+            id="circle"
+            :style="{ left: `calc(${advancement}% - 9px)` }"
+          ></div>
+          <div id="line"></div>
+        </div>
+        <span
+          >{{ currentTime | formatTime }} / {{ totalTime | formatTime }}</span
+        >
+      </div>
+    </div>
   </div>
 </template>
 
@@ -8,22 +37,194 @@
 import Vue from 'vue'
 import { io } from 'socket.io-client'
 import axios from 'axios'
+let sendTimeInterval = null as any
 
 export default Vue.extend({
+  filters: {
+    formatTime(value: number): string {
+      let string = ''
+      const roundedValue = Math.round(value)
+      const seconds = roundedValue % 60
+      if (seconds < 10) {
+        string = ':0' + seconds
+      } else {
+        string = ':' + seconds
+      }
+      let minutes = (roundedValue - seconds) / 60
+      let hours = 0
+      if (minutes > 60) {
+        const minutesRest = minutes % 60
+        hours = (minutes - minutesRest) / 60
+        minutes = minutesRest
+        if (minutes < 10) {
+          string = `${hours}:0${minutes}` + string
+        } else {
+          string = `${hours}:${minutes}` + string
+        }
+      } else {
+        string = minutes + string
+      }
+      return string
+    },
+  },
   data() {
     return {
       socket: null as any,
+      url: '',
+      playerWidth: 1200,
+      playerHeight: 675,
+      playerVars: {
+        autoplay: 1,
+        controls: 0,
+        modestbranding: 1,
+      },
+      currentTime: 0,
+      totalTime: 1,
+      firstplay: false,
     }
   },
+  computed: {
+    videoID(): string {
+      if (!this.url) {
+        return ''
+      }
+      return this.url.split('v=')[1].split('&')[0]
+    },
+    player(): any {
+      return (this.$refs.youtube as any).player
+    },
+    advancement(): number {
+      return (this.currentTime / this.totalTime) * 100
+    },
+  },
   mounted() {
-    axios.get('/api/init').then((_response) => {
-      this.socket = io()
+    axios.get('/api/init').then(() => {
+      this.socket = io({
+        query: { room: this.$route.params.name },
+      })
+      this.socket.on('initialize', (data: any) => {
+        this.firstplay = false
+        this.url = data.url
+        this.currentTime = data.timer
+        if (this.currentTime !== 0) {
+          this.currentTime += 3
+        }
+        this.player.seekTo(this.currentTime, true)
+        this.player.playVideo()
+      })
+      this.socket.on('playVideo', () => {
+        this.player.playVideo()
+      })
+      this.socket.on('pauseVideo', () => {
+        this.player.pauseVideo()
+        clearInterval(sendTimeInterval)
+      })
+      this.socket.on('seekTo', (data: number) => {
+        this.player.seekTo(data, true)
+        this.playVideo()
+      })
     })
   },
   methods: {
     send() {
       this.socket.emit('msg', 'cc')
     },
+    playVideo() {
+      this.socket.emit('playVideo')
+    },
+    pauseVideo() {
+      this.socket.emit('pauseVideo')
+    },
+    getDuration() {
+      this.player.getDuration().then((time: number) => {
+        this.totalTime = time
+      })
+    },
+    onPlaying() {
+      if (!this.firstplay) {
+        this.firstplay = true
+        this.player.seekTo(this.currentTime, true)
+      } else {
+        sendTimeInterval = setInterval(() => {
+          this.player.getCurrentTime().then((time: number) => {
+            this.currentTime = time
+            this.socket.emit('refreshTimer', time)
+          })
+        }, 1000)
+      }
+      this.getDuration()
+    },
+    switchTime(event: MouseEvent) {
+      const bar = document.querySelector('#bar')! as HTMLDivElement
+      const barPosX = bar.offsetLeft
+      const barWidth = bar.offsetWidth
+      let relativeClickPos = ((event.clientX - barPosX) / barWidth) * 100
+      if (relativeClickPos < 0) {
+        relativeClickPos = 0
+      }
+      const secondsTimer = (relativeClickPos * this.totalTime) / 100
+      this.socket.emit('seekTo', secondsTimer)
+    },
   },
 })
 </script>
+
+<style lang="scss" scoped>
+#view {
+  display: flex;
+  width: 95%;
+  height: 100%;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 25px 25px;
+  gap: 50px;
+}
+#youtube-wrapper {
+  pointer-events: none;
+}
+
+.theater {
+  width: 1200px;
+}
+
+.controls {
+  display: flex;
+  width: 100%;
+  margin: auto;
+  justify-content: stretch;
+  align-items: center;
+  gap: 10px;
+  height: 30px;
+  margin-top: 7px;
+  button {
+    height: 100%;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+}
+
+#bar {
+  flex-grow: 1;
+  position: relative;
+  cursor: pointer;
+  height: 30px;
+  margin: 0 10px;
+}
+#line {
+  height: 0;
+  border: 1px solid var(--background-button);
+  width: 100%;
+  position: absolute;
+  top: 15px;
+}
+#circle {
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  top: 6px;
+  position: absolute;
+  background-color: var(--background-button);
+  border-radius: 9px;
+}
+</style>

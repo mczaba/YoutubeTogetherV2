@@ -17,7 +17,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~plugins/youtube.js'],
   serverMiddleware: ['~/API/server.ts'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -33,6 +33,25 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    [
+      'nuxt-fontawesome',
+      {
+        imports: [
+          {
+            set: '@fortawesome/free-solid-svg-icons',
+            icons: ['fas'],
+          },
+          {
+            set: '@fortawesome/free-regular-svg-icons',
+            icons: ['far'],
+          },
+          {
+            set: '@fortawesome/free-brands-svg-icons',
+            icons: ['fab'],
+          },
+        ],
+      },
+    ],
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

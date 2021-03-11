@@ -6,17 +6,31 @@ const app = express()
 app.use('/', multer().none())
 
 const rooms: string[] = []
-const ownerMap = new Map()
+const roomMap = new Map()
 let server: any = null
-let io = null
+let io: any = null
 
 app.get('/init', (req: any, res: Response) => {
   if (!server) {
     server = req.connection.server
     io = new Server(server)
     io.on('connection', function (socket: Socket) {
-      socket.on('msg', (msg: string) => {
-        console.log('Recived: ' + msg)
+      const room = socket.handshake.query.room
+      socket.join(room)
+      io.to(room).emit('initialize', roomMap.get(room))
+      socket.on('playVideo', function () {
+        io.to(room).emit('playVideo')
+      })
+      socket.on('pauseVideo', function () {
+        io.to(room).emit('pauseVideo')
+      })
+      socket.on('seekTo', function (data) {
+        io.to(room).emit('seekTo', data)
+      })
+      socket.on('refreshTimer', function (time: number) {
+        const roomInfo = roomMap.get(room)
+        roomInfo.timer = time
+        roomMap.set(room, roomInfo)
       })
     })
   }
@@ -24,12 +38,17 @@ app.get('/init', (req: any, res: Response) => {
 })
 
 app.post('/create', (req: Request, res: Response) => {
-  console.log('2eme middleware')
   if (rooms.includes(req.body.room)) {
     res.send('Ce nom de salon est déjà utilisé')
   } else {
     rooms.push(req.body.room)
-    ownerMap.set(req.body.room, req.body.nickname)
+    const roomInfos = {
+      host: req.body.nickname,
+      url: req.body.url,
+      timer: 0,
+      guests: [],
+    }
+    roomMap.set(req.body.room, roomInfos)
     res.send('salon créé')
   }
 })

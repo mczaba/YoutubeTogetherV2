@@ -11,6 +11,11 @@
     "lint": "npm run lint:js"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.34",
+    "@fortawesome/free-brands-svg-icons": "^5.15.2",
+    "@fortawesome/free-regular-svg-icons": "^5.15.2",
+    "@fortawesome/free-solid-svg-icons": "^5.15.2",
+    "@fortawesome/vue-fontawesome": "^0.1.10",
     "@nuxt/typescript-runtime": "^2.0.1",
     "@nuxtjs/axios": "^5.12.5",
     "@types/express": "^4.17.11",
@@ -19,8 +24,10 @@
     "core-js": "^3.8.3",
     "multer": "^1.4.2",
     "nuxt": "^2.14.12",
+    "nuxt-fontawesome": "^0.4.0",
     "socket.io": "^4.0.0",
-    "socket.io-client": "^4.0.0"
+    "socket.io-client": "^4.0.0",
+    "vue-youtube": "^1.4.0"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.12",

@@ -7,7 +7,7 @@
   </div>
 </template>
 
-<style>
+<style lang="scss">
 * {
   margin: 0;
 }
@@ -22,7 +22,7 @@ body {
   height: 100%;
   --background-nav: #2d3142;
   --background-main: #4f5d75;
-  --background-button: #bfc0c0;
+  --background-button: #ef8354;
   --text-nav: #ffffff;
   --text-main: #ffffff;
   --text-header: #ef8354;
@@ -60,7 +60,6 @@ h1 {
   background-color: var(--text-header);
   text-decoration: none;
   padding: 10px 30px;
-  margin-left: 15px;
   cursor: pointer;
 }
 .error {
