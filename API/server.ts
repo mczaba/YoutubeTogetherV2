@@ -60,7 +60,7 @@ app.post(
   (req: Request, res: Response) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      return res.status(400).send(errors.array()[0].msg)
+      return res.status(220).send(errors.array()[0].msg)
     }
     if (rooms.includes(req.body.room)) {
       res.send('Ce nom de salon est déjà utilisé')

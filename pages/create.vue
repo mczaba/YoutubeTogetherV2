@@ -1,55 +1,57 @@
 <template>
   <div class="app">
     <h1>Créer un salon</h1>
-    <form action="">
-      <div class="field">
-        <label for="room validation">Nom du salon</label>
-        <validation-provider v-slot="{ errors }" rules="min:4">
-          <input
-            v-model="room"
-            type="text"
-            name="room"
-            placeholder="Nom du salon"
-          />
-          <span class="error">{{ errors[0] }}</span>
-        </validation-provider>
-      </div>
-      <div class="field">
-        <label for="url">URL de la vidéo</label>
-        <validation-provider v-slot="{ errors }" rules="youtubeLink">
-          <input
-            v-model="url"
-            type="text"
-            name="url"
-            placeholder="url de la video"
-          />
-          <span class="error validation">{{ errors[0] }}</span>
-        </validation-provider>
-      </div>
-      <div class="field">
-        <label for="nickname">Votre pseudo</label>
-        <validation-provider v-slot="{ errors }" rules="min:4">
-          <input
-            v-model="nickname"
-            type="text"
-            name="nickname"
-            placeholder="pseudo"
-          />
-          <span class="error validation">{{ errors[0] }}</span>
-        </validation-provider>
-      </div>
-      <div class="buttonContainer">
-        <p :class="{ invisible: !error }" class="error big">{{ error }}</p>
-        <button class="button" @click.prevent="submit">Créer le salon</button>
-      </div>
-    </form>
+    <validation-observer v-slot="{ handleSubmit }">
+      <form action="" @submit.prevent="handleSubmit(submit)">
+        <div class="field">
+          <label for="room validation">Nom du salon</label>
+          <validation-provider v-slot="{ errors }" rules="min:4">
+            <input
+              v-model="room"
+              type="text"
+              name="room"
+              placeholder="Nom du salon"
+            />
+            <span class="error">{{ errors[0] }}</span>
+          </validation-provider>
+        </div>
+        <div class="field">
+          <label for="url">URL de la vidéo</label>
+          <validation-provider v-slot="{ errors }" rules="youtubeLink">
+            <input
+              v-model="url"
+              type="text"
+              name="url"
+              placeholder="url de la video"
+            />
+            <span class="error validation">{{ errors[0] }}</span>
+          </validation-provider>
+        </div>
+        <div class="field">
+          <label for="nickname">Votre pseudo</label>
+          <validation-provider v-slot="{ errors }" rules="min:4">
+            <input
+              v-model="nickname"
+              type="text"
+              name="nickname"
+              placeholder="pseudo"
+            />
+            <span class="error validation">{{ errors[0] }}</span>
+          </validation-provider>
+        </div>
+        <div class="buttonContainer">
+          <p :class="{ invisible: !error }" class="error big">{{ error }}</p>
+          <button class="button">Créer le salon</button>
+        </div>
+      </form>
+    </validation-observer>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import axios from 'axios'
-import { ValidationProvider, extend } from 'vee-validate'
+import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
 
 extend('min', {
   validate(value, args) {
@@ -70,6 +72,7 @@ extend('youtubeLink', {
 export default Vue.extend({
   components: {
     ValidationProvider,
+    ValidationObserver,
   },
   data() {
     return {
