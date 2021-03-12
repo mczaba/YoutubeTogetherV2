@@ -27,6 +27,7 @@
     "nuxt-fontawesome": "^0.4.0",
     "socket.io": "^4.0.0",
     "socket.io-client": "^4.0.0",
+    "vee-validate": "^3.4.5",
     "vue-youtube": "^1.4.0"
   },
   "devDependencies": {

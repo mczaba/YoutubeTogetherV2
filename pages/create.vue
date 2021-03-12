@@ -2,35 +2,46 @@
   <div class="app">
     <h1>Créer un salon</h1>
     <form action="">
-      <div>
-        <label for="room">Nom du salon</label>
-        <input
-          v-model="room"
-          type="text"
-          name="room"
-          placeholder="Nom du salon"
-        />
+      <div class="field">
+        <label for="room validation">Nom du salon</label>
+        <validation-provider v-slot="{ errors }" rules="min:4">
+          <input
+            v-model="room"
+            type="text"
+            name="room"
+            placeholder="Nom du salon"
+          />
+          <span class="error">{{ errors[0] }}</span>
+        </validation-provider>
       </div>
-      <div>
+      <div class="field">
         <label for="url">URL de la vidéo</label>
-        <input
-          v-model="url"
-          type="text"
-          name="url"
-          placeholder="url de la video"
-        />
+        <validation-provider v-slot="{ errors }" rules="youtubeLink">
+          <input
+            v-model="url"
+            type="text"
+            name="url"
+            placeholder="url de la video"
+          />
+          <span class="error validation">{{ errors[0] }}</span>
+        </validation-provider>
       </div>
-      <div>
+      <div class="field">
         <label for="nickname">Votre pseudo</label>
-        <input
-          v-model="nickname"
-          type="text"
-          name="nickname"
-          placeholder="pseudo"
-        />
+        <validation-provider v-slot="{ errors }" rules="min:4">
+          <input
+            v-model="nickname"
+            type="text"
+            name="nickname"
+            placeholder="pseudo"
+          />
+          <span class="error validation">{{ errors[0] }}</span>
+        </validation-provider>
       </div>
-      <p v-if="error" class="error">{{ error }}</p>
-      <button class="button" @click.prevent="submit">Créer le salon</button>
+      <div class="buttonContainer">
+        <p :class="{ invisible: !error }" class="error big">{{ error }}</p>
+        <button class="button" @click.prevent="submit">Créer le salon</button>
+      </div>
     </form>
   </div>
 </template>
@@ -38,8 +49,28 @@
 <script lang="ts">
 import Vue from 'vue'
 import axios from 'axios'
+import { ValidationProvider, extend } from 'vee-validate'
 
+extend('min', {
+  validate(value, args) {
+    return value.length >= args.length
+  },
+  params: ['length'],
+  message: 'Ce champ doit faire au moins 4 caractères',
+})
+
+extend('youtubeLink', {
+  validate(value: string): boolean {
+    if (!value.includes('www.youtube.com/watch?v=')) return false
+    if (value.split('www.youtube.com/watch?v=')[1].length < 11) return false
+    return true
+  },
+  message: 'Ce champ doit contenir un lien de vidéo youtube valide',
+})
 export default Vue.extend({
+  components: {
+    ValidationProvider,
+  },
   data() {
     return {
       room: 'test',
@@ -73,7 +104,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 form {
-  height: 300px;
+  height: 500px;
   width: 40%;
   margin: auto;
   display: flex;
@@ -90,5 +121,27 @@ form {
 }
 h1 {
   margin: 15px;
+}
+
+.field {
+  position: relative;
+}
+.validation {
+  position: absolute;
+  top: 65px;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .big {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  .invisible {
+    visibility: hidden;
+    height: 24px;
+  }
 }
 </style>
