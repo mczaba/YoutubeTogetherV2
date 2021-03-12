@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import multer from 'multer'
 import { Server, Socket } from 'socket.io'
+import { body, CustomValidator, validationResult } from 'express-validator'
 const app = express()
 
 app.use('/', multer().none())
@@ -37,21 +38,45 @@ app.get('/init', (req: any, res: Response) => {
   res.send('server is set')
 })
 
-app.post('/create', (req: Request, res: Response) => {
-  if (rooms.includes(req.body.room)) {
-    res.send('Ce nom de salon est déjà utilisé')
-  } else {
-    rooms.push(req.body.room)
-    const roomInfos = {
-      host: req.body.nickname,
-      url: req.body.url,
-      timer: 0,
-      guests: [],
+const youtubeValidator: CustomValidator = (value: string) => {
+  if (!value.includes('www.youtube.com/watch?v='))
+    throw new Error("Le lien youtube n'est pas valide")
+  if (value.split('www.youtube.com/watch?v=')[1].length < 11)
+    throw new Error("Le lien youtube n'est pas valide")
+  return true
+}
+
+app.post(
+  '/create',
+  body('room')
+    .trim()
+    .isLength({ min: 4 })
+    .withMessage('Le nom du salon doit faire au moins 4 caractères'),
+  body('nickname')
+    .trim()
+    .isLength({ min: 4 })
+    .withMessage('Le pseudo doit faire au moins 4 caractères'),
+  body('url').trim().custom(youtubeValidator),
+  (req: Request, res: Response) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(400).send(errors.array()[0].msg)
     }
-    roomMap.set(req.body.room, roomInfos)
-    res.send('salon créé')
+    if (rooms.includes(req.body.room)) {
+      res.send('Ce nom de salon est déjà utilisé')
+    } else {
+      rooms.push(req.body.room)
+      const roomInfos = {
+        host: req.body.nickname,
+        url: req.body.url,
+        timer: 0,
+        guests: [],
+      }
+      roomMap.set(req.body.room, roomInfos)
+      res.send('salon créé')
+    }
   }
-})
+)
 
 module.exports = {
   path: '/api',
