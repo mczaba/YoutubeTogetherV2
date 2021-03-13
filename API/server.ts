@@ -59,9 +59,7 @@ app.post(
   body('url').trim().custom(youtubeValidator),
   (req: Request, res: Response) => {
     const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      return res.status(220).send(errors.array()[0].msg)
-    }
+    if (!errors.isEmpty()) return res.status(220).send(errors.array()[0].msg)
     if (rooms.includes(req.body.room)) {
       res.send('Ce nom de salon est déjà utilisé')
     } else {
@@ -75,6 +73,31 @@ app.post(
       roomMap.set(req.body.room, roomInfos)
       res.send('salon créé')
     }
+  }
+)
+
+app.post(
+  '/join',
+  body('room')
+    .trim()
+    .isLength({ min: 4 })
+    .withMessage('Le nom du salon doit faire au moins 4 caractères'),
+  body('nickname')
+    .trim()
+    .isLength({ min: 4 })
+    .withMessage('Le pseudo doit faire au moins 4 caractères'),
+  (req: Request, res: Response) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) return res.status(220).send(errors.array()[0].msg)
+    if (!roomMap.has(req.body.room))
+      return res.status(220).send("Ce salon n'existe pas")
+    const room = roomMap.get(req.body.room)
+    if (
+      room.host === req.body.nickname ||
+      room.guests.includes(req.body.nickname)
+    )
+      return res.status(220).send('Ce pseudo est déjà pris dans ce salon')
+    res.send('ok')
   }
 )
 
