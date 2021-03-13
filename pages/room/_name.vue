@@ -37,6 +37,9 @@
 import Vue from 'vue'
 import { io } from 'socket.io-client'
 import axios from 'axios'
+
+type initData = { url: string; timer: number }
+
 let sendTimeInterval = null as any
 let syncInterval = null as any
 
@@ -54,6 +57,7 @@ export default Vue.extend({
         : `00:${('0' + roundedValue).slice(-2)}`
     },
   },
+  middleware: 'auth',
   data() {
     return {
       socket: null as any,
@@ -88,7 +92,7 @@ export default Vue.extend({
       this.socket = io({
         query: { room: this.$route.params.name },
       })
-      this.socket.on('initialize', (data: any) => {
+      this.socket.on('initialize', (data: initData) => {
         this.url = data.url
         this.currentTime = data.timer
         if (this.currentTime !== 0) {
@@ -118,6 +122,10 @@ export default Vue.extend({
       })
     },
     onPlaying() {
+      if (this.currentTime === 0) {
+        this.player.seekTo(this.currentTime, true)
+        this.currentTime++
+      }
       if (!sendTimeInterval) {
         sendTimeInterval = setInterval(() => {
           this.player.getCurrentTime().then((time: number) => {

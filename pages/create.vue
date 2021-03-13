@@ -92,6 +92,7 @@ export default Vue.extend({
         .post('/api/create', fd)
         .then((res: any) => {
           if (res.data === 'salon créé') {
+            this.$store.commit('auth/setName', this.nickname)
             this.$router.push(`/room/${this.room.replace(' ', '-')}`)
           } else {
             this.error = res.data
