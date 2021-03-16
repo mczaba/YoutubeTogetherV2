@@ -90,7 +90,10 @@ export default Vue.extend({
   mounted() {
     axios.get('/api/init').then(() => {
       this.socket = io({
-        query: { room: this.$route.params.name },
+        query: {
+          room: this.$route.params.name,
+          user: this.$store.getters['auth/name'],
+        },
       })
       this.socket.on('initialize', (data: initData) => {
         this.url = data.url

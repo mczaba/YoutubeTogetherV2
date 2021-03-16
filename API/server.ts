@@ -29,9 +29,12 @@ app.get('/init', (req: any, res: Response) => {
         io.to(room).emit('seekTo', data)
       })
       socket.on('refreshTimer', function (time: number) {
+        const user = socket.handshake.query.user
         const roomInfo = roomMap.get(room)
-        roomInfo.timer = time
-        roomMap.set(room, roomInfo)
+        if (user === roomInfo.host) {
+          roomInfo.timer = time
+          roomMap.set(room, roomInfo)
+        }
       })
     })
   }

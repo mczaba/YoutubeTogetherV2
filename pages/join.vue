@@ -125,6 +125,5 @@ h1 {
     visibility: hidden;
     height: 24px;
   }
-}margin: 15px;
 }
 </style>
