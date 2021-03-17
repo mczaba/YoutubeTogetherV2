@@ -30,6 +30,7 @@
         >
       </div>
     </div>
+    <chat v-if="url" :room="$route.params.name" />
   </div>
 </template>
 
@@ -37,6 +38,7 @@
 import Vue from 'vue'
 import { io } from 'socket.io-client'
 import axios from 'axios'
+import chat from '../../components/chat.vue'
 
 type initData = { url: string; timer: number }
 
@@ -44,6 +46,9 @@ let sendTimeInterval = null as any
 let syncInterval = null as any
 
 export default Vue.extend({
+  components: {
+    chat,
+  },
   filters: {
     formatTime(value: number): string {
       let roundedValue = Math.round(value)

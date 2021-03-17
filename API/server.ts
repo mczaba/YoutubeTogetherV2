@@ -51,6 +51,12 @@ app.get('/init', (req: any, res: Response) => {
           roomMap.set(room, roomInfo)
         }
       })
+      socket.on('messageSent', function (message: string) {
+        io.to(room).emit('messageSent', {
+          author: socket.handshake.query.user,
+          content: message,
+        })
+      })
     })
   }
   res.send('server is set')
