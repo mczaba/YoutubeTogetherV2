@@ -43,7 +43,6 @@ import chat from '../../components/chat.vue'
 type initData = { url: string; timer: number }
 
 let sendTimeInterval = null as any
-let syncInterval = null as any
 
 export default Vue.extend({
   components: {
@@ -103,11 +102,6 @@ export default Vue.extend({
       this.socket.on('initialize', (data: initData) => {
         this.url = data.url
         this.currentTime = data.timer
-        if (this.currentTime !== 0) {
-          syncInterval = setInterval(() => {
-            this.currentTime++
-          }, 1000)
-        }
       })
       this.socket.on('playVideo', () => {
         this.player.playVideo()
@@ -141,11 +135,6 @@ export default Vue.extend({
             this.socket.emit('refreshTimer', time)
           })
         }, 1000)
-      }
-      if (syncInterval) {
-        this.player.seekTo(this.currentTime, true)
-        clearInterval(syncInterval)
-        syncInterval = null
       }
       this.getDuration()
     },
