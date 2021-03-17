@@ -20,12 +20,27 @@ app.get('/init', (req: any, res: Response) => {
       socket.join(room)
       io.to(room).emit('initialize', roomMap.get(room))
       socket.on('playVideo', function () {
+        if (
+          !roomMap.get(room).rights &&
+          socket.handshake.query.user !== roomMap.get(room).host
+        )
+          return
         io.to(room).emit('playVideo')
       })
       socket.on('pauseVideo', function () {
+        if (
+          !roomMap.get(room).rights &&
+          socket.handshake.query.user !== roomMap.get(room).host
+        )
+          return
         io.to(room).emit('pauseVideo')
       })
       socket.on('seekTo', function (data) {
+        if (
+          !roomMap.get(room).rights &&
+          socket.handshake.query.user !== roomMap.get(room).host
+        )
+          return
         io.to(room).emit('seekTo', data)
       })
       socket.on('refreshTimer', function (time: number) {
@@ -70,6 +85,7 @@ app.post(
       const roomInfos = {
         host: req.body.nickname,
         url: req.body.url,
+        rights: req.body.permissions === 'true',
         timer: 0,
         guests: [],
       }

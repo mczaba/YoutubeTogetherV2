@@ -39,6 +39,12 @@
             <span class="error validation">{{ errors[0] }}</span>
           </validation-provider>
         </div>
+        <div>
+          <input v-model="permission" type="checkbox" name="permissions" />
+          <label for="permissions"
+            >Donner le droit à tout le monde de contrôler la vidéo</label
+          >
+        </div>
         <div class="buttonContainer">
           <p :class="{ invisible: !error }" class="error big">{{ error }}</p>
           <button class="button">Créer le salon</button>
@@ -79,6 +85,7 @@ export default Vue.extend({
       room: 'test',
       url: 'https://www.youtube.com/watch?v=RjoO6wPAaVI',
       nickname: 'test',
+      permission: false,
       error: '',
     }
   },
@@ -88,6 +95,7 @@ export default Vue.extend({
       fd.append('room', this.room)
       fd.append('url', this.url)
       fd.append('nickname', this.nickname)
+      fd.append('permissions', this.permission.toString())
       axios
         .post('/api/create', fd)
         .then((res: any) => {
@@ -117,7 +125,7 @@ form {
   justify-content: space-around;
   div {
     width: 100%;
-    input {
+    input[type='text'] {
       width: 100%;
       margin-top: 5px;
     }
