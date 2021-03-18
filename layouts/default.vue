@@ -22,11 +22,13 @@ body {
   height: 100%;
   --background-nav: #2d3142;
   --background-main: #4f5d75;
+  --background-secondary: #3a3f52;
   --background-button: #ef8354;
   --text-nav: #ffffff;
   --text-main: #ffffff;
   --text-header: #ef8354;
   --text-button: #2d3142;
+  --borders: #999;
   background-color: var(--background-main);
   color: var(--text-main);
 }

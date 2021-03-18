@@ -1,5 +1,6 @@
 <template>
   <div id="view">
+    <side-bar />
     <div class="theater">
       <div id="youtube-wrapper">
         <youtube
@@ -29,6 +30,15 @@
           >{{ currentTime | formatTime }} / {{ totalTime | formatTime }}</span
         >
       </div>
+      <div class="infos">
+        <h1>Titre de la vidéo</h1>
+        <p>auteur</p>
+        <p>
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Soluta quos
+          distinctio aperiam quis blanditiis delectus odio minus esse voluptatem
+          expedita eius, autem facilis. Similique ea, eos dolor labore sit quam.
+        </p>
+      </div>
     </div>
     <chat v-if="url" :room="$route.params.name" />
   </div>
@@ -39,6 +49,7 @@ import Vue from 'vue'
 import { io } from 'socket.io-client'
 import axios from 'axios'
 import chat from '../../components/chat.vue'
+import sideBar from '../../components/sideBar.vue'
 
 type initData = { url: string; timer: number }
 
@@ -47,6 +58,7 @@ let sendTimeInterval = null as any
 export default Vue.extend({
   components: {
     chat,
+    sideBar,
   },
   filters: {
     formatTime(value: number): string {
@@ -155,25 +167,18 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 #view {
-  display: flex;
-  width: 95%;
-  height: 100%;
-  justify-content: space-evenly;
-  align-items: center;
-  margin: 25px 25px;
-  gap: 50px;
+  display: grid;
+  width: 100%;
+  height: calc(100% - 50px);
+  grid-template-columns: 2fr 6fr 3fr;
 }
 #youtube-wrapper {
   pointer-events: none;
 }
 
-.theater {
-  width: 1200px;
-}
-
 .controls {
   display: flex;
-  width: 100%;
+  width: 99%;
   margin: auto;
   justify-content: stretch;
   align-items: center;
@@ -185,6 +190,14 @@ export default Vue.extend({
     padding: 5px 15px;
     border-radius: 5px;
     font-weight: bold;
+  }
+}
+
+.infos {
+  width: 99%;
+  margin: 15px auto;
+  h1 {
+    text-align: left;
   }
 }
 

@@ -69,11 +69,10 @@ export default Vue.extend({
 
 <style lang="scss">
 .chat {
-  height: 720px;
-  width: 500px;
-  background-color: var(--background-nav);
+  height: 100%;
+  background-color: var(--background-secondary);
   color: var(--text-nav);
-  border-radius: 10px;
+  border-left: 1px solid var(--borders);
   position: relative;
   overflow: hidden;
   .chatView {
@@ -84,7 +83,7 @@ export default Vue.extend({
     position: relative;
     .messageList {
       overflow: auto;
-      max-height: 560px;
+      max-height: 100%;
       width: calc(100% - 30px);
       position: absolute;
       bottom: 19px;
@@ -103,10 +102,10 @@ export default Vue.extend({
     position: absolute;
     bottom: 0;
     border: none;
-    border-top: 1px solid var(--text-nav);
+    border-top: 1px solid var(--borders);
     padding: 10px 10px;
     resize: none;
-    background-color: var(--background-nav);
+    background-color: var(--background-secondary);
     color: var(--text-nav);
     &::placeholder {
       font-family: 'Nunito', sans-serif;
