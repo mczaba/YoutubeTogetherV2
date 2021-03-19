@@ -4,7 +4,11 @@
     <div class="chatView">
       <div class="messageList">
         <p v-for="(message, index) in messageList" :key="index">
-          <b>{{ message.author }}</b> : {{ message.content }}
+          <b v-if="message.author !== 'info'">{{ message.author }}</b
+          ><span v-if="message.author !== 'info'">
+            : {{ message.content }}</span
+          >
+          <i v-if="message.author === 'info'">{{ message.content }}</i>
         </p>
       </div>
     </div>
@@ -18,36 +22,33 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { io } from 'socket.io-client'
+import { Socket } from 'socket.io-client'
 
 type Message = { author: string; content: string }
+type guestUpdate = {
+  guestList: string[]
+  newGuest: string
+}
 
 export default Vue.extend({
+  props: {
+    socket: Socket,
+  },
   data() {
     return {
       messageList: [] as Object[],
       messageInput: '',
-      socket: null as any,
     }
   },
   mounted() {
-    this.socket = io({
-      query: {
-        room: this.$route.params.name,
-        user: this.$store.getters['auth/name'],
-      },
-    })
     this.socket.on('messageSent', (data: Message) => {
-      const messageList = document.querySelector('.messageList')!
-      this.messageList.push(data)
-      if (
-        messageList.scrollTop + messageList.clientHeight ===
-        messageList.scrollHeight
-      ) {
-        setTimeout(() => {
-          messageList.scrollTop = messageList.scrollHeight
-        }, 5)
-      }
+      this.displayMessage(data)
+    })
+    this.socket.on('guestsUpdate', (data: guestUpdate) => {
+      this.displayMessage({
+        author: 'info',
+        content: `${data.newGuest} vient de se connecter au salon`,
+      })
     })
   },
   methods: {
@@ -61,6 +62,18 @@ export default Vue.extend({
       if (this.messageInput) {
         this.socket.emit('messageSent', this.messageInput)
         this.messageInput = ''
+      }
+    },
+    displayMessage(message: Message) {
+      const messageList = document.querySelector('.messageList')!
+      this.messageList.push(message)
+      if (
+        messageList.scrollTop + messageList.clientHeight ===
+        messageList.scrollHeight
+      ) {
+        setTimeout(() => {
+          messageList.scrollTop = messageList.scrollHeight
+        }, 5)
       }
     },
   },

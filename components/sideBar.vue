@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { io } from 'socket.io-client'
+import { Socket } from 'socket.io-client'
 
 type roomInfos = {
   host: string
@@ -30,11 +30,18 @@ type roomInfos = {
   timer: number
   guests: string[]
 }
+type guestUpdate = {
+  guestList: string[]
+  newGuest: string
+}
 
 export default Vue.extend({
+  props: {
+    socket: Socket,
+  },
   data() {
     return {
-      socket: null as any,
+      // socket: null as any,
       host: '',
       rights: false,
       guests: [] as string[],
@@ -42,12 +49,7 @@ export default Vue.extend({
     }
   },
   mounted() {
-    this.socket = io({
-      query: {
-        room: this.$route.params.name,
-        user: this.$store.getters['auth/name'],
-      },
-    })
+    this.socket.emit('getRoomInfos')
     this.socket.on('initialize', (data: roomInfos) => {
       if (!this.initalized) {
         this.host = data.host
@@ -56,8 +58,8 @@ export default Vue.extend({
         this.initalized = true
       }
     })
-    this.socket.on('guestsUpdate', (data: string[]) => {
-      this.guests = [...data]
+    this.socket.on('guestsUpdate', (data: guestUpdate) => {
+      this.guests = [...data.guestList]
     })
   },
 })

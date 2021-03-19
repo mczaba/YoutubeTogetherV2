@@ -18,9 +18,11 @@ app.get('/init', (req: any, res: Response) => {
     io.on('connection', function (socket: Socket) {
       const room = socket.handshake.query.room
       const user = socket.handshake.query.user
-      console.log(`${user} connected`)
       socket.join(room)
-      io.to(room).emit('guestsUpdate', roomMap.get(room).guests)
+      io.to(room).emit('guestsUpdate', {
+        guestList: roomMap.get(room).guests,
+        newGuest: user,
+      })
       io.to(room).emit('initialize', roomMap.get(room))
       socket.on('playVideo', function () {
         if (!roomMap.get(room).rights && user !== roomMap.get(room).host) return
@@ -46,6 +48,9 @@ app.get('/init', (req: any, res: Response) => {
           author: user,
           content: message,
         })
+      })
+      socket.on('getRoomInfos', function () {
+        io.to(room).emit('initialize', roomMap.get(room))
       })
       socket.on('disconnect', function () {
         const roomInfos = roomMap.get(room)

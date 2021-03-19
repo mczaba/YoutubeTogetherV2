@@ -1,6 +1,6 @@
 <template>
   <div id="view">
-    <side-bar />
+    <side-bar v-if="url" :socket="socket" />
     <div class="theater">
       <div id="youtube-wrapper">
         <youtube
@@ -40,7 +40,7 @@
         </p>
       </div>
     </div>
-    <chat v-if="url" />
+    <chat v-if="url" :socket="socket" />
   </div>
 </template>
 
