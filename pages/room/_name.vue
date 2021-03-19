@@ -1,6 +1,6 @@
 <template>
   <div id="view">
-    <side-bar v-if="url" :socket="socket" />
+    <side-bar v-if="socket" :socket="socket" />
     <div class="theater">
       <div id="youtube-wrapper">
         <youtube
@@ -40,7 +40,7 @@
         </p>
       </div>
     </div>
-    <chat v-if="url" :socket="socket" />
+    <chat v-if="socket" :socket="socket" />
   </div>
 </template>
 
@@ -50,14 +50,7 @@ import { io } from 'socket.io-client'
 import axios from 'axios'
 import chat from '../../components/chat.vue'
 import sideBar from '../../components/sideBar.vue'
-
-type roomInfos = {
-  host: string
-  url: string
-  right: boolean
-  timer: number
-  guests: string[]
-}
+import { roomInfos } from '../../assets/types'
 
 let sendTimeInterval = null as any
 

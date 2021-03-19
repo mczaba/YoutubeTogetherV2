@@ -22,18 +22,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Socket } from 'socket.io-client'
-
-type roomInfos = {
-  host: string
-  url: string
-  right: boolean
-  timer: number
-  guests: string[]
-}
-type guestUpdate = {
-  guestList: string[]
-  newGuest: string
-}
+import { roomInfos, guestUpdate } from '../assets/types'
 
 export default Vue.extend({
   props: {

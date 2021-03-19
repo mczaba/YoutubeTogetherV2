@@ -23,12 +23,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Socket } from 'socket.io-client'
-
-type Message = { author: string; content: string }
-type guestUpdate = {
-  guestList: string[]
-  newGuest: string
-}
+import { Message, guestUpdate } from '../assets/types'
 
 export default Vue.extend({
   props: {
@@ -47,7 +42,10 @@ export default Vue.extend({
     this.socket.on('guestsUpdate', (data: guestUpdate) => {
       this.displayMessage({
         author: 'info',
-        content: `${data.newGuest} vient de se connecter au salon`,
+        content:
+          data.newGuest.action === 'joined'
+            ? `${data.newGuest.name} vient de se connecter au salon`
+            : `${data.newGuest.name} vient de se déconnecter`,
       })
     })
   },

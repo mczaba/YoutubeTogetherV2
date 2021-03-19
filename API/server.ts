@@ -21,7 +21,7 @@ app.get('/init', (req: any, res: Response) => {
       socket.join(room)
       io.to(room).emit('guestsUpdate', {
         guestList: roomMap.get(room).guests,
-        newGuest: user,
+        newGuest: { name: user, action: 'joined' },
       })
       io.to(room).emit('initialize', roomMap.get(room))
       socket.on('playVideo', function () {
@@ -56,7 +56,10 @@ app.get('/init', (req: any, res: Response) => {
         const roomInfos = roomMap.get(room)
         if (roomInfos.guests.includes(user)) {
           roomInfos.guests.splice(roomInfos.guests.indexOf(user), 1)
-          io.to(room).emit('guestsUpdate', roomInfos.guests)
+          io.to(room).emit('guestsUpdate', {
+            guestList: roomMap.get(room).guests,
+            newGuest: { name: user, action: 'left' },
+          })
         }
       })
     })
