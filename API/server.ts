@@ -17,34 +17,24 @@ app.get('/init', (req: any, res: Response) => {
     io = new Server(server)
     io.on('connection', function (socket: Socket) {
       const room = socket.handshake.query.room
+      const user = socket.handshake.query.user
+      console.log(`${user} connected`)
       socket.join(room)
+      io.to(room).emit('guestsUpdate', roomMap.get(room).guests)
       io.to(room).emit('initialize', roomMap.get(room))
       socket.on('playVideo', function () {
-        if (
-          !roomMap.get(room).rights &&
-          socket.handshake.query.user !== roomMap.get(room).host
-        )
-          return
+        if (!roomMap.get(room).rights && user !== roomMap.get(room).host) return
         io.to(room).emit('playVideo')
       })
       socket.on('pauseVideo', function () {
-        if (
-          !roomMap.get(room).rights &&
-          socket.handshake.query.user !== roomMap.get(room).host
-        )
-          return
+        if (!roomMap.get(room).rights && user !== roomMap.get(room).host) return
         io.to(room).emit('pauseVideo')
       })
       socket.on('seekTo', function (data) {
-        if (
-          !roomMap.get(room).rights &&
-          socket.handshake.query.user !== roomMap.get(room).host
-        )
-          return
+        if (!roomMap.get(room).rights && user !== roomMap.get(room).host) return
         io.to(room).emit('seekTo', data)
       })
       socket.on('refreshTimer', function (time: number) {
-        const user = socket.handshake.query.user
         const roomInfo = roomMap.get(room)
         if (user === roomInfo.host) {
           roomInfo.timer = time
@@ -53,9 +43,16 @@ app.get('/init', (req: any, res: Response) => {
       })
       socket.on('messageSent', function (message: string) {
         io.to(room).emit('messageSent', {
-          author: socket.handshake.query.user,
+          author: user,
           content: message,
         })
+      })
+      socket.on('disconnect', function () {
+        const roomInfos = roomMap.get(room)
+        if (roomInfos.guests.includes(user)) {
+          roomInfos.guests.splice(roomInfos.guests.indexOf(user), 1)
+          io.to(room).emit('guestsUpdate', roomInfos.guests)
+        }
       })
     })
   }
@@ -93,7 +90,7 @@ app.post(
         url: req.body.url,
         rights: req.body.permissions === 'true',
         timer: 0,
-        guests: [],
+        guests: [] as string[],
       }
       roomMap.set(req.body.room, roomInfos)
       res.send('salon créé')
@@ -122,6 +119,7 @@ app.post(
       room.guests.includes(req.body.nickname)
     )
       return res.status(220).send('Ce pseudo est déjà pris dans ce salon')
+    room.guests.push(req.body.nickname)
     res.send('ok')
   }
 )

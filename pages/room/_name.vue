@@ -40,7 +40,7 @@
         </p>
       </div>
     </div>
-    <chat v-if="url" :room="$route.params.name" />
+    <chat v-if="url" />
   </div>
 </template>
 
@@ -51,7 +51,13 @@ import axios from 'axios'
 import chat from '../../components/chat.vue'
 import sideBar from '../../components/sideBar.vue'
 
-type initData = { url: string; timer: number }
+type roomInfos = {
+  host: string
+  url: string
+  right: boolean
+  timer: number
+  guests: string[]
+}
 
 let sendTimeInterval = null as any
 
@@ -111,7 +117,7 @@ export default Vue.extend({
           user: this.$store.getters['auth/name'],
         },
       })
-      this.socket.on('initialize', (data: initData) => {
+      this.socket.on('initialize', (data: roomInfos) => {
         this.url = data.url
         this.currentTime = data.timer
       })
