@@ -56,7 +56,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      room: '',
+      room: this.$route.params.room || '',
       nickname: '',
       error: '',
     }
