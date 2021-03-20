@@ -31,12 +31,9 @@
         >
       </div>
       <div class="infos">
-        <h1>Titre de la vidéo</h1>
-        <p>auteur</p>
-        <p>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Soluta quos
-          distinctio aperiam quis blanditiis delectus odio minus esse voluptatem
-          expedita eius, autem facilis. Similique ea, eos dolor labore sit quam.
+        <h1>{{ videoTitle }}</h1>
+        <p id="description">
+          {{ videoDescription }}
         </p>
       </div>
     </div>
@@ -86,6 +83,9 @@ export default Vue.extend({
       },
       currentTime: 0,
       totalTime: 1,
+      firstPlay: true,
+      videoTitle: '',
+      videoDescription: '',
     }
   },
   computed: {
@@ -113,6 +113,7 @@ export default Vue.extend({
       this.socket.on('initialize', (data: roomInfos) => {
         this.url = data.url
         this.currentTime = data.timer
+        this.getDetails()
       })
       this.socket.on('playVideo', () => {
         this.player.playVideo()
@@ -135,9 +136,9 @@ export default Vue.extend({
       })
     },
     onPlaying() {
-      if (this.currentTime === 0) {
+      if (this.firstPlay) {
         this.player.seekTo(this.currentTime, true)
-        this.currentTime++
+        this.firstPlay = false
       }
       if (!sendTimeInterval) {
         sendTimeInterval = setInterval(() => {
@@ -159,6 +160,17 @@ export default Vue.extend({
       }
       const secondsTimer = (relativeClickPos * this.totalTime) / 100
       this.socket.emit('seekTo', secondsTimer)
+    },
+    getDetails() {
+      axios
+        .get(`/api/videodetails/${this.videoID}`)
+        .then((response) => {
+          this.videoTitle = response.data.title
+          this.videoDescription = response.data.description
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
   },
 })
@@ -191,12 +203,20 @@ export default Vue.extend({
     font-weight: bold;
   }
 }
-
+.theater {
+  height: calc(100vh - 50px);
+}
 .infos {
   width: 99%;
-  margin: 15px auto;
+  margin: 15px auto 0 auto;
+  height: calc(100% - 731px);
   h1 {
     text-align: left;
+  }
+  #description {
+    white-space: pre-line;
+    height: calc(100% - 36px);
+    overflow-y: scroll;
   }
 }
 

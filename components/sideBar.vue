@@ -4,10 +4,7 @@
       <div id="roomInfos">
         <h1>{{ $route.params.name }}</h1>
         <h3>Hôte : {{ host }}</h3>
-        <p v-if="rights">
-          Tous les utilisateurs peuvent interragir avec la vidéo
-        </p>
-        <p v-else>Seul l'hôte peut interragir avec la vidéo</p>
+        <p>Permission: {{ rights ? 'Tout le monde' : 'Hôte' }}</p>
       </div>
       <div id="userList">
         <h1>Utiliteurs connectés</h1>
@@ -30,7 +27,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      // socket: null as any,
       host: '',
       rights: false,
       guests: [] as string[],

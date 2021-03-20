@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import multer from 'multer'
 import { Server, Socket } from 'socket.io'
 import { body, CustomValidator, validationResult } from 'express-validator'
+import fetch from 'node-fetch'
 const app = express()
 
 app.use('/', multer().none())
@@ -131,6 +132,19 @@ app.post(
     res.send('ok')
   }
 )
+
+app.get('/videodetails/:id', (req: Request, res: Response) => {
+  const url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet&id=${req.params.id}&key=${process.env.API_KEY}`
+  fetch(url)
+    .then((response) => {
+      return response.json()
+    })
+    .then((response) => {
+      const { title, description } = response.items[0].snippet
+      res.json({ title, description })
+    })
+    .catch((error) => console.log(error))
+})
 
 module.exports = {
   path: '/api',
