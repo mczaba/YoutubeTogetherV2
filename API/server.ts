@@ -28,10 +28,16 @@ app.get('/init', (req: any, res: Response) => {
       socket.on('playVideo', function () {
         if (!roomMap.get(room).rights && user !== roomMap.get(room).host) return
         io.to(room).emit('playVideo')
+        const roomInfos = roomMap.get(room)
+        roomInfos.playing = true
+        roomMap.set(room, roomInfos)
       })
       socket.on('pauseVideo', function () {
         if (!roomMap.get(room).rights && user !== roomMap.get(room).host) return
         io.to(room).emit('pauseVideo')
+        const roomInfos = roomMap.get(room)
+        roomInfos.playing = false
+        roomMap.set(room, roomInfos)
       })
       socket.on('seekTo', function (data) {
         if (!roomMap.get(room).rights && user !== roomMap.get(room).host) return
@@ -99,6 +105,7 @@ app.post(
         url: req.body.url,
         rights: req.body.permissions === 'true',
         timer: 0,
+        playing: false,
         guests: [] as string[],
       }
       roomMap.set(req.body.room, roomInfos)

@@ -14,6 +14,7 @@ type roomInfos = {
   right: boolean
   timer: number
   guests: string[]
+  playing: boolean
 }
 
 export { Message, guestUpdate, roomInfos }

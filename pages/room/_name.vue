@@ -77,7 +77,7 @@ export default Vue.extend({
       playerWidth: 1200,
       playerHeight: 675,
       playerVars: {
-        autoplay: 1,
+        autoplay: 0,
         controls: 0,
         modestbranding: 1,
       },
@@ -114,6 +114,7 @@ export default Vue.extend({
         this.url = data.url
         this.currentTime = data.timer
         this.getDetails()
+        if (data.playing) this.player.playVideo()
       })
       this.socket.on('playVideo', () => {
         this.player.playVideo()
@@ -217,6 +218,8 @@ export default Vue.extend({
     white-space: pre-line;
     height: calc(100% - 36px);
     overflow-y: scroll;
+    scrollbar-color: var(--background-secondary) var(--background-nav);
+    scrollbar-width: thin;
   }
 }
 
