@@ -6,9 +6,37 @@
         <h3>Hôte : {{ host }}</h3>
         <p>Permission: {{ rights ? 'Tout le monde' : 'Hôte' }}</p>
       </div>
+      <div v-if="hasRights" id="roomControls">
+        <h1></h1>
+        <label for="url">Changer de vidéo</label>
+        <validation-provider v-slot="{ errors }" rules="youtubeLink">
+          <div class="url-input">
+            <input
+              v-model="url"
+              type="text"
+              name="url"
+              placeholder="url de la video"
+            />
+            <button class="button" @click="changeURL">Changer</button>
+          </div>
+          <span class="error validation">{{ errors[0] }}</span>
+        </validation-provider>
+        <div v-if="host === $store.getters['auth/name']">
+          <input
+            v-model="rightsInput"
+            type="checkbox"
+            name="rights"
+            @change="changeRights"
+          />
+          <label for="rights"
+            >Permission: {{ rights ? 'Tout le monde' : 'Hôte' }}</label
+          >
+        </div>
+      </div>
       <div id="userList">
         <h1>Utiliteurs connectés</h1>
         <ul>
+          <li>👑 {{ host }}</li>
           <li v-for="guest in guests" :key="guest">{{ guest }}</li>
         </ul>
       </div>
@@ -19,9 +47,22 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Socket } from 'socket.io-client'
+import { ValidationProvider, extend } from 'vee-validate'
 import { roomInfos, guestUpdate } from '../assets/types'
 
+extend('youtubeLink', {
+  validate(value: string): boolean {
+    if (!value.includes('www.youtube.com/watch?v=')) return false
+    if (value.split('www.youtube.com/watch?v=')[1].length < 11) return false
+    return true
+  },
+  message: 'Ce champ doit contenir un lien de vidéo youtube valide',
+})
+
 export default Vue.extend({
+  components: {
+    ValidationProvider,
+  },
   props: {
     socket: Socket,
   },
@@ -29,23 +70,42 @@ export default Vue.extend({
     return {
       host: '',
       rights: false,
+      rightsInput: false,
       guests: [] as string[],
       initalized: false,
+      url: '',
     }
+  },
+  computed: {
+    hasRights(): boolean {
+      if (!this.rights && this.host !== this.$store.getters['auth/name'])
+        return false
+      return true
+    },
   },
   mounted() {
     this.socket.emit('getRoomInfos')
     this.socket.on('initialize', (data: roomInfos) => {
-      if (!this.initalized) {
-        this.host = data.host
-        this.rights = data.right
-        this.guests = [...data.guests]
-        this.initalized = true
-      }
+      this.host = data.host
+      this.rights = data.rights
+      this.rightsInput = data.rights
+      this.guests = [...data.guests]
+      this.initalized = true
     })
     this.socket.on('guestsUpdate', (data: guestUpdate) => {
       this.guests = [...data.guestList]
     })
+  },
+  methods: {
+    changeURL(): void {
+      if (!this.url.includes('www.youtube.com/watch?v=')) return
+      if (this.url.split('www.youtube.com/watch?v=')[1].length < 11) return
+      this.socket.emit('changeURL', this.url)
+    },
+    changeRights(): void {
+      console.log('rights')
+      this.socket.emit('changeRights')
+    },
   },
 })
 </script>
@@ -59,7 +119,7 @@ nav {
     border-bottom: 1px solid var(--borders);
     display: flex;
     flex-direction: column;
-    padding: 15px 5px;
+    padding: 15px 15px;
     h3,
     p {
       margin-top: 5px;
@@ -79,6 +139,23 @@ nav {
         }
       }
     }
+  }
+}
+
+#roomControls {
+  padding: 15px 15px;
+  border-bottom: 1px solid var(--borders);
+  .url-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    margin: 5px 0;
+    input[type='text'] {
+      width: 50%;
+    }
+  }
+  .error {
+    font-size: 12px;
   }
 }
 </style>

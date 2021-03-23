@@ -61,7 +61,7 @@ h1 {
   font-weight: bold;
   background-color: var(--text-header);
   text-decoration: none;
-  padding: 10px 30px;
+  padding: 10px 10px;
   cursor: pointer;
 }
 .error {

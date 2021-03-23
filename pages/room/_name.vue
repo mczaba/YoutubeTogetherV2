@@ -111,6 +111,7 @@ export default Vue.extend({
         },
       })
       this.socket.on('initialize', (data: roomInfos) => {
+        console.log(data)
         this.url = data.url
         this.currentTime = data.timer
         this.getDetails()
@@ -170,7 +171,7 @@ export default Vue.extend({
           this.videoDescription = response.data.description
         })
         .catch((error) => {
-          console.log(error)
+          console.log(error.message)
         })
     },
   },

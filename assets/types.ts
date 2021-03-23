@@ -11,7 +11,7 @@ type guestUpdate = {
 type roomInfos = {
   host: string
   url: string
-  right: boolean
+  rights: boolean
   timer: number
   guests: string[]
   playing: boolean

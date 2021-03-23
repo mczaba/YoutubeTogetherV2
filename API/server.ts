@@ -43,6 +43,20 @@ app.get('/init', (req: any, res: Response) => {
         if (!roomMap.get(room).rights && user !== roomMap.get(room).host) return
         io.to(room).emit('seekTo', data)
       })
+      socket.on('changeURL', function (url: string) {
+        const roomInfos = roomMap.get(room)
+        roomInfos.url = url
+        roomInfos.playing = false
+        roomInfos.timer = 0
+        roomMap.set(room, roomInfos)
+        io.to(room).emit('initialize', roomInfos)
+      })
+      socket.on('changeRights', function () {
+        const roomInfos = roomMap.get(room)
+        roomInfos.rights = !roomInfos.rights
+        roomMap.set(room, roomInfos)
+        io.to(room).emit('initialize', roomInfos)
+      })
       socket.on('refreshTimer', function (time: number) {
         const roomInfo = roomMap.get(room)
         if (user === roomInfo.host) {
