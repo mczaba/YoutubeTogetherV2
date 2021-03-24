@@ -103,7 +103,6 @@ export default Vue.extend({
       this.socket.emit('changeURL', this.url)
     },
     changeRights(): void {
-      console.log('rights')
       this.socket.emit('changeRights')
     },
   },

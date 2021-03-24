@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <nav>
-      <h1>cc</h1>
+    <nav class="navbar">
+      <NuxtLink to="/create">Créer un salon</NuxtLink>
+      <NuxtLink to="/join">Rejoindre un salon</NuxtLink>
     </nav>
     <Nuxt />
   </div>
@@ -37,7 +38,7 @@ body {
   height: 100%;
 }
 
-nav {
+.navbar {
   background-color: var(--background-nav);
   color: var(--text-nav);
   height: 50px;
@@ -45,6 +46,18 @@ nav {
   top: 0;
   left: 0;
   right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  a,
+  a:visited,
+  a:active {
+    color: var(--text-header);
+    font-weight: bold;
+    font-size: 1.5em;
+    text-decoration: none;
+  }
 }
 
 h1 {

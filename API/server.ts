@@ -17,7 +17,7 @@ app.get('/init', (req: any, res: Response) => {
     server = req.connection.server
     io = new Server(server)
     io.on('connection', function (socket: Socket) {
-      const room = socket.handshake.query.room
+      const room = socket.handshake.query.room as string
       const user = socket.handshake.query.user
       socket.join(room)
       io.to(room).emit('guestsUpdate', {
@@ -75,6 +75,13 @@ app.get('/init', (req: any, res: Response) => {
       })
       socket.on('disconnect', function () {
         const roomInfos = roomMap.get(room)
+        if (!roomInfos) return
+        if (roomInfos.host === user) {
+          io.to(room).emit('killRoom')
+          roomMap.delete(room)
+          rooms.splice(rooms.indexOf(room), 1)
+          return
+        }
         if (roomInfos.guests.includes(user)) {
           roomInfos.guests.splice(roomInfos.guests.indexOf(user), 1)
           io.to(room).emit('guestsUpdate', {
@@ -164,7 +171,6 @@ app.get('/videodetails/:id', (req: Request, res: Response) => {
       const { title, description } = response.items[0].snippet
       res.json({ title, description })
     })
-    .catch((error) => console.log(error))
 })
 
 module.exports = {

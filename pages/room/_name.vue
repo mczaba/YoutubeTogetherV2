@@ -1,5 +1,5 @@
 <template>
-  <div id="view">
+  <div v-if="!destroyRoom" id="view">
     <side-bar v-if="socket" :socket="socket" />
     <div class="theater">
       <div id="youtube-wrapper">
@@ -39,6 +39,9 @@
     </div>
     <chat v-if="socket" :socket="socket" />
   </div>
+  <div v-else class="destroy">
+    <h1>L'hôte du salon s'est déconnecté</h1>
+  </div>
 </template>
 
 <script lang="ts">
@@ -74,6 +77,7 @@ export default Vue.extend({
     return {
       socket: null as any,
       url: '',
+      destroyRoom: false,
       playerWidth: 1200,
       playerHeight: 675,
       playerVars: {
@@ -111,7 +115,6 @@ export default Vue.extend({
         },
       })
       this.socket.on('initialize', (data: roomInfos) => {
-        console.log(data)
         this.url = data.url
         this.currentTime = data.timer
         this.getDetails()
@@ -129,7 +132,13 @@ export default Vue.extend({
         this.player.seekTo(data, true)
         this.socket.emit('playVideo')
       })
+      this.socket.on('killRoom', () => {
+        this.destroyRoom = true
+      })
     })
+  },
+  beforeDestroy() {
+    this.socket.disconnect()
   },
   methods: {
     getDuration() {
@@ -164,15 +173,10 @@ export default Vue.extend({
       this.socket.emit('seekTo', secondsTimer)
     },
     getDetails() {
-      axios
-        .get(`/api/videodetails/${this.videoID}`)
-        .then((response) => {
-          this.videoTitle = response.data.title
-          this.videoDescription = response.data.description
-        })
-        .catch((error) => {
-          console.log(error.message)
-        })
+      axios.get(`/api/videodetails/${this.videoID}`).then((response) => {
+        this.videoTitle = response.data.title
+        this.videoDescription = response.data.description
+      })
     },
   },
 })
@@ -222,6 +226,13 @@ export default Vue.extend({
     scrollbar-color: var(--background-secondary) var(--background-nav);
     scrollbar-width: thin;
   }
+}
+
+.destroy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 50px);
 }
 
 #bar {
