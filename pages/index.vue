@@ -1,16 +1,14 @@
 <template>
   <div class="container app">
-    <div>
-      <Logo />
-      <h1 class="title">YoutubeTogether</h1>
-      <div class="links">
-        <a href="/create" rel="noopener noreferrer" class="button">
-          Créer un salon
-        </a>
-        <a href="/join" rel="noopener noreferrer" class="button">
-          Rejoindre un salon
-        </a>
-      </div>
+    <h1 class="title">YoutubeTogether</h1>
+    <p>
+      Bienvenue sur l'application YoutubeTogether. Vous pouvez créer un salon ou
+      rejoindre un salon déjà existant pour regarder des vidéos youtube en
+      synchroninisé avec vos amis
+    </p>
+    <div class="links">
+      <NuxtLink to="/create" class="button"> Créer un salon </NuxtLink>
+      <NuxtLink to="/join" class="button"> Rejoindre un salon </NuxtLink>
     </div>
   </div>
 </template>
@@ -21,35 +19,37 @@ import Vue from 'vue'
 export default Vue.extend({})
 </script>
 
-<style>
+<style lang="scss">
 .container {
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 50px;
   text-align: center;
-}
 
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: var(--text-main);
-  letter-spacing: 1px;
-}
+  .title {
+    font-family: 'Quicksand', 'Source Sans Pro', -apple-system,
+      BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+      sans-serif;
+    display: block;
+    font-weight: 300;
+    font-size: 100px;
+    color: var(--text-main);
+    letter-spacing: 1px;
+  }
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
+  p {
+    font-size: 1.5rem;
+  }
 
-.links {
-  padding-top: 15px;
+  .links {
+    padding-top: 15px;
+    .button {
+      margin: 0 10px;
+    }
+  }
 }
 </style>

@@ -65,6 +65,10 @@ h1 {
   color: var(--text-header);
 }
 
+p {
+  max-width: 50rem;
+}
+
 .button {
   display: inline-block;
   border-radius: 4px;

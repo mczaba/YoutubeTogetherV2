@@ -23,12 +23,13 @@
       </div>
       <span>{{ currentTime | formatTime }} / {{ totalTime | formatTime }}</span>
     </div>
-    <div class="infos">
+    <div v-if="!infosError" class="infos">
       <h1>{{ videoTitle }}</h1>
       <p id="description">
         {{ videoDescription }}
       </p>
     </div>
+    <h1 v-else class="error">{{ infosError }}</h1>
   </div>
 </template>
 
@@ -72,6 +73,7 @@ export default Vue.extend({
       firstPlay: true,
       videoTitle: '',
       videoDescription: '',
+      infosError: '',
     }
   },
   computed: {
@@ -141,10 +143,21 @@ export default Vue.extend({
       this.socket.emit('seekTo', secondsTimer)
     },
     getDetails() {
-      axios.get(`/api/videodetails/${this.videoID}`).then((response) => {
-        this.videoTitle = response.data.title
-        this.videoDescription = response.data.description
-      })
+      axios
+        .get(`/api/videodetails/${this.videoID}`)
+        .then((response) => {
+          if (response.status === 200) {
+            this.videoTitle = response.data.title
+            this.videoDescription = response.data.description
+          } else {
+            this.infosError =
+              "Les informations de la vidéo n'ont pas pu être récupérées"
+          }
+        })
+        .catch(() => {
+          this.infosError =
+            "Les informations de la vidéo n'ont pas pu être récupérées"
+        })
     },
   },
 })
@@ -199,14 +212,12 @@ export default Vue.extend({
     width: 99%;
     margin: 15px auto 0 auto;
     height: calc(100% - 731px);
+    overflow-y: scroll;
     h1 {
       text-align: left;
     }
     #description {
       white-space: pre-line;
-      height: calc(100% - 36px);
-      overflow-y: scroll;
-      scrollbar-color: var(--background-secondary) var(--background-nav);
       scrollbar-width: thin;
     }
   }
