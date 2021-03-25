@@ -148,9 +148,11 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: stretch;
+    flex-wrap: wrap;
     margin: 5px 0;
     input[type='text'] {
-      width: 50%;
+      width: 100%;
+      max-width: 135px;
     }
   }
   .error {
