@@ -3,6 +3,7 @@
     <nav class="navbar">
       <NuxtLink to="/create">Créer un salon</NuxtLink>
       <NuxtLink to="/join">Rejoindre un salon</NuxtLink>
+      <NuxtLink to="/room/list">Liste des salons</NuxtLink>
     </nav>
     <Nuxt />
   </div>

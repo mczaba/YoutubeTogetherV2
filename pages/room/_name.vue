@@ -54,7 +54,7 @@ export default Vue.extend({
   display: grid;
   width: 100%;
   height: calc(100% - 50px);
-  grid-template-columns: 2fr 1200px 3fr;
+  grid-template-columns: 275px 1200px auto;
 }
 
 .destroy {

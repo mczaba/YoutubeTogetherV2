@@ -8,6 +8,7 @@
         width="1200"
         height="675"
         @playing="onPlaying"
+        @ready="onReady"
       />
     </div>
     <div class="controls">

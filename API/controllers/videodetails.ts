@@ -8,8 +8,8 @@ const videoDetailsController = (req: Request, res: Response) => {
       return response.json()
     })
     .then((response) => {
-      const { title, description } = response.items[0].snippet
-      res.json({ title, description })
+      const { title, description, thumbnails } = response.items[0].snippet
+      res.json({ title, description, thumbnail: thumbnails.medium.url })
     })
     .catch(() => {
       res
