@@ -1,5 +1,5 @@
 <template>
-  <div @click="goToJoin" class="card">
+  <div class="card" @click="goToJoin">
     <h2>{{ room }}</h2>
     <img :src="thumbnail" alt="" />
     <h3>{{ videoTitle }}</h3>

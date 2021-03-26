@@ -1,5 +1,5 @@
 <template>
-  <div class="container app">
+  <div class="container">
     <h1 class="title">YoutubeTogether</h1>
     <p>
       Bienvenue sur l'application YoutubeTogether. Vous pouvez créer un salon ou
@@ -21,8 +21,6 @@ export default Vue.extend({})
 
 <style lang="scss">
 .container {
-  margin: 0 auto;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -31,10 +29,6 @@ export default Vue.extend({})
   text-align: center;
 
   .title {
-    font-family: 'Quicksand', 'Source Sans Pro', -apple-system,
-      BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-      sans-serif;
-    display: block;
     font-weight: 300;
     font-size: 100px;
     color: var(--text-main);
@@ -49,6 +43,25 @@ export default Vue.extend({})
     padding-top: 15px;
     .button {
       margin: 0 10px;
+    }
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .container {
+    .title {
+      font-size: 5em;
+    }
+  }
+}
+
+@media screen and (max-width: 630px) {
+  .container {
+    .title {
+      font-size: 2.5em;
+    }
+    p {
+      font-size: 1em;
     }
   }
 }

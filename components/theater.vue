@@ -1,14 +1,13 @@
 <template>
-  <div class="theater">
+  <div ref="theater" class="theater">
     <div id="youtube-wrapper">
       <youtube
         ref="youtube"
         :video-id="videoID"
         :player-vars="playerVars"
-        width="1200"
-        height="675"
+        :width="playerWidth"
+        :height="playerHeight"
         @playing="onPlaying"
-        @ready="onReady"
       />
     </div>
     <div class="controls">
@@ -24,7 +23,11 @@
       </div>
       <span>{{ currentTime | formatTime }} / {{ totalTime | formatTime }}</span>
     </div>
-    <div v-if="!infosError" class="infos">
+    <div
+      v-if="!infosError"
+      :style="{ height: `calc(100% - ${56 + playerHeight}px)` }"
+      class="infos"
+    >
       <h1>{{ videoTitle }}</h1>
       <p id="description">
         {{ videoDescription }}
@@ -92,6 +95,8 @@ export default Vue.extend({
     },
   },
   mounted() {
+    this.getElementWidth()
+    window.addEventListener('resize', this.getElementWidth)
     this.socket.on('initialize', (data: roomInfos) => {
       this.url = data.url
       this.currentTime = data.timer
@@ -112,6 +117,11 @@ export default Vue.extend({
     })
   },
   methods: {
+    getElementWidth() {
+      const width = window.innerWidth - 675
+      this.playerWidth = width
+      this.playerHeight = Math.floor((width * 9) / 16) + 1
+    },
     getDuration() {
       this.player.getDuration().then((time: number) => {
         this.totalTime = time

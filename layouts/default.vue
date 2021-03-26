@@ -1,13 +1,50 @@
 <template>
   <div id="app">
     <nav class="navbar">
-      <NuxtLink to="/create">Créer un salon</NuxtLink>
-      <NuxtLink to="/join">Rejoindre un salon</NuxtLink>
-      <NuxtLink to="/room/list">Liste des salons</NuxtLink>
+      <div v-if="mobileView">
+        <NuxtLink to="/create">Créer un salon</NuxtLink>
+      </div>
+      <div v-if="mobileView">
+        <NuxtLink to="/join">Rejoindre un salon</NuxtLink>
+      </div>
+      <div v-if="mobileView">
+        <NuxtLink to="/room/list">Liste des salons</NuxtLink>
+      </div>
+      <template v-if="!mobileView">
+        <NuxtLink to="/create">Créer un salon</NuxtLink>
+        <NuxtLink to="/join">Rejoindre un salon</NuxtLink>
+        <NuxtLink to="/room/list">Liste des salons</NuxtLink>
+      </template>
     </nav>
-    <Nuxt />
+    <Nuxt class="content" />
   </div>
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
+  data() {
+    return {
+      windowWidth: 0,
+    }
+  },
+  computed: {
+    mobileView(): boolean {
+      return this.windowWidth < 651
+    },
+  },
+  mounted() {
+    // eslint-disable-next-line nuxt/no-env-in-hooks
+    if (process.client) {
+      this.windowWidth = window.innerWidth
+      window.addEventListener('resize', () => {
+        this.windowWidth = window.innerWidth
+      })
+    }
+  },
+})
+</script>
 
 <style lang="scss">
 * {
@@ -39,11 +76,36 @@ body {
   height: 100%;
 }
 
+.button {
+  display: inline-block;
+  border-radius: 4px;
+  font-size: 1rem;
+  border: 1px solid var(--text-header);
+  color: var(--background-main);
+  font-weight: bold;
+  background-color: var(--text-header);
+  text-decoration: none;
+  padding: 10px 10px;
+  cursor: pointer;
+}
+.error {
+  color: var(--text-header);
+  font-weight: bold;
+}
+
+h1 {
+  text-align: center;
+  color: var(--text-header);
+}
+
+p {
+  max-width: 50rem;
+}
+
 .navbar {
   background-color: var(--background-nav);
-  color: var(--text-nav);
   height: 50px;
-  position: sticky;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -61,29 +123,45 @@ body {
   }
 }
 
-h1 {
-  text-align: center;
-  color: var(--text-header);
+.content {
+  height: calc(100% - 75px);
+  padding-top: 75px;
 }
 
-p {
-  max-width: 50rem;
-}
-
-.button {
-  display: inline-block;
-  border-radius: 4px;
-  font-size: 1rem;
-  border: 1px solid var(--text-header);
-  color: var(--background-main);
-  font-weight: bold;
-  background-color: var(--text-header);
-  text-decoration: none;
-  padding: 10px 10px;
-  cursor: pointer;
-}
-.error {
-  color: var(--text-header);
-  font-weight: bold;
+@media screen and (max-width: 650px) {
+  .navbar {
+    background-color: var(--background-button);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: auto;
+    height: 100px;
+    gap: 0;
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: calc(100% - 10px);
+      border-right: 1px solid var(--text-button);
+      width: calc(33% - 1px);
+      padding: 5px;
+      a,
+      a:visited,
+      a:active {
+        color: var(--text-button);
+        font-size: 1em;
+        text-align: center;
+      }
+    }
+    div:last-child {
+      border: none;
+    }
+  }
+  .content {
+    height: calc(100% - 125px);
+    padding-top: 25px;
+    padding-bottom: 100px;
+  }
 }
 </style>

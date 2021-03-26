@@ -53,8 +53,8 @@ export default Vue.extend({
 #view {
   display: grid;
   width: 100%;
-  height: calc(100% - 50px);
-  grid-template-columns: 275px 1200px auto;
+  grid-template-columns: 275px auto 400px;
+  padding-top: 50px;
 }
 
 .destroy {

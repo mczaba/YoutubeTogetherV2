@@ -87,8 +87,10 @@ export default Vue.extend({
 <style lang="scss" scoped>
 form {
   height: 500px;
-  width: 40%;
-  margin: auto;
+  width: calc(100% - 20px);
+  padding: 0 10px;
+  max-width: 500px;
+  margin: 25px auto 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -96,13 +98,10 @@ form {
   div {
     width: 100%;
     input {
-      width: 100%;
+      width: calc(100% - 16px);
       margin-top: 5px;
     }
   }
-}
-h1 {
-  margin: 15px;
 }
 
 .field {
