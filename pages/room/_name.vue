@@ -89,7 +89,7 @@ export default Vue.extend({
 @media screen and (max-width: 1000px) {
   #view {
     grid-template-columns: auto;
-    grid-template-rows: 230px 700px 700px;
+    grid-template-rows: auto 700px 700px;
   }
   .side-bar {
     grid-column: 1 / 2;

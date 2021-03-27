@@ -1,6 +1,7 @@
 <template>
   <div class="room-list">
     <h1>Liste des salons</h1>
+    <h2 v-if="roomList.length === 0">Il n'y a pas de salon actuellement</h2>
     <div class="card-list">
       <room-card v-for="room in roomList" :key="room" :room="room" />
     </div>
@@ -40,6 +41,9 @@ export default Vue.extend({
 <style lang="scss" scoped>
 h1 {
   margin: 15px;
+}
+h2 {
+  text-align: center;
 }
 .card-list {
   display: flex;
