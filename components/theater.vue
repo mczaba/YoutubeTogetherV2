@@ -100,16 +100,16 @@ export default Vue.extend({
     this.getElementWidth()
     window.addEventListener('resize', this.getElementWidth)
     this.socket.on('initialize', (data: roomInfos) => {
+      this.getDetails()
       this.url = data.url
       this.currentTime = data.timer
-      this.getDetails()
       this.playing = data.playing
-      this.player.playVideo()
-      if (this.firstPlay && data.playing) {
+      if (this.firstPlay && data.playing && !syncInterval) {
         syncInterval = setInterval(() => {
           this.currentTime++
         }, 1000)
       }
+      if (this.firstPlay) this.player.playVideo()
     })
     this.socket.on('playVideo', () => {
       this.playing = true
@@ -122,6 +122,7 @@ export default Vue.extend({
       sendTimeInterval = null
     })
     this.socket.on('seekTo', (data: number) => {
+      this.currentTime = data
       this.player.seekTo(data, true)
       this.socket.emit('playVideo')
     })
@@ -142,14 +143,15 @@ export default Vue.extend({
       })
     },
     onPlaying() {
+      this.getDuration()
+      if (this.firstPlay) {
+        clearInterval(syncInterval)
+        this.player.seekTo(this.currentTime, true)
+        this.firstPlay = false
+      }
       if (!this.playing) {
         this.player.pauseVideo()
         return
-      }
-      if (this.firstPlay) {
-        this.player.seekTo(this.currentTime, true)
-        this.firstPlay = false
-        clearInterval(syncInterval)
       }
       if (!sendTimeInterval) {
         sendTimeInterval = setInterval(() => {
@@ -159,7 +161,6 @@ export default Vue.extend({
           })
         }, 1000)
       }
-      this.getDuration()
     },
     switchTime(event: MouseEvent) {
       const bar = document.querySelector('#bar')! as HTMLDivElement
@@ -173,6 +174,7 @@ export default Vue.extend({
       this.socket.emit('seekTo', secondsTimer)
     },
     getDetails() {
+      console.log('getdetails')
       axios
         .get(`/api/videodetails/${this.videoID}`)
         .then((response) => {

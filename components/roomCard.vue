@@ -4,6 +4,7 @@
     <img :src="thumbnail" alt="" />
     <h3>{{ videoTitle }}</h3>
     <p>Hôte: {{ host }}</p>
+    <p>Nombre de participants: {{ guests + 1 }}</p>
   </div>
 </template>
 
@@ -23,6 +24,7 @@ export default Vue.extend({
       thumbnail: '',
       host: '',
       videoTitle: '',
+      guests: 0,
     }
   },
   mounted() {
@@ -30,6 +32,7 @@ export default Vue.extend({
       .get(`/api/details/${this.room}`)
       .then((response) => {
         this.host = response.data.host
+        this.guests = response.data.guests.length
         const id = response.data.url.split('v=')[1].split('&')[0]
         return axios.get(`/api/videodetails/${id}`)
       })

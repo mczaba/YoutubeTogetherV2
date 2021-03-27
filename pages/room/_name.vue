@@ -89,7 +89,7 @@ export default Vue.extend({
 @media screen and (max-width: 1000px) {
   #view {
     grid-template-columns: auto;
-    grid-template-rows: auto 700px 700px;
+    grid-template-rows: auto 700px auto;
   }
   .side-bar {
     grid-column: 1 / 2;
@@ -97,11 +97,11 @@ export default Vue.extend({
   }
   .theater {
     grid-column: 1 / 2;
-    grid-row: 2 / 3;
+    grid-row: 3/4;
   }
   .chat {
     grid-column: 1 / 2;
-    grid-row: 3 / 4;
+    grid-row: 2/3;
   }
 }
 @media screen and (max-width: 650px) {
