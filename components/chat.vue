@@ -86,19 +86,20 @@ export default Vue.extend({
   position: relative;
   overflow: hidden;
   .chatView {
-    height: calc(100% - 161px);
+    height: calc(100% - 147px);
     text-align: left;
-    padding: 15px;
+    padding: 0 15px 5px 15px;
     overflow: auto;
     position: relative;
     .messageList {
       overflow: auto;
-      max-height: 100%;
+      max-height: calc(100% - 10px);
       width: calc(100% - 30px);
       position: absolute;
-      bottom: 19px;
+      bottom: 5px;
+      padding-top: 5px;
       p {
-        margin: 5px 0 0 0;
+        margin: 0;
       }
     }
   }

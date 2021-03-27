@@ -136,7 +136,7 @@ p {
 }
 
 .content {
-  height: calc(100% - 75px);
+  height: calc(100vh - 75px);
   padding-top: 75px;
 }
 

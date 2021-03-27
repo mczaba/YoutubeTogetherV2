@@ -198,6 +198,9 @@ export default Vue.extend({
       border-radius: 5px;
       font-weight: bold;
     }
+    span {
+      cursor: default;
+    }
     #bar {
       flex-grow: 1;
       position: relative;
