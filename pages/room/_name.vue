@@ -1,8 +1,8 @@
 <template>
   <div v-if="!destroyRoom" id="view">
-    <side-bar v-if="socket" :socket="socket" />
-    <theater v-if="socket" :socket="socket" />
-    <chat v-if="socket" :socket="socket" />
+    <side-bar v-if="socket" class="side-bar" :socket="socket" />
+    <theater v-if="socket" class="theater" :socket="socket" />
+    <chat v-if="socket" class="chat" :socket="socket" />
   </div>
   <div v-else class="destroy">
     <h1>L'hôte du salon s'est déconnecté</h1>
@@ -62,5 +62,47 @@ export default Vue.extend({
   align-items: center;
   justify-content: center;
   height: calc(100vh - 50px);
+}
+
+@media screen and (max-width: 1350px) {
+  #view {
+    grid-template-columns: auto 400px;
+    grid-template-rows: 230px auto;
+  }
+  .side-bar {
+    grid-column: 1 / 3;
+    grid-row: 1 / 2;
+  }
+  .theater {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+  }
+  .chat {
+    grid-column: 2 / 3;
+    grid-row: 2/ 3;
+  }
+}
+@media screen and (max-width: 1000px) {
+  #view {
+    grid-template-columns: auto;
+    grid-template-rows: 230px 700px 700px;
+  }
+  .side-bar {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+  }
+  .theater {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+  }
+  .chat {
+    grid-column: 1 / 2;
+    grid-row: 3 / 4;
+  }
+}
+@media screen and (max-width: 650px) {
+  #view {
+    padding-top: 0;
+  }
 }
 </style>

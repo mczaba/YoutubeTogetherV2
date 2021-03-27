@@ -118,9 +118,12 @@ export default Vue.extend({
   },
   methods: {
     getElementWidth() {
-      const width = window.innerWidth - 675
-      this.playerWidth = width
-      this.playerHeight = Math.floor((width * 9) / 16) + 1
+      let width = 0
+      if (window.innerWidth > 1350) width = window.innerWidth - 675
+      else if (window.innerWidth > 1000) width = window.innerWidth - 400
+      else width = window.innerWidth
+      this.playerWidth = Math.max(width, 300)
+      this.playerHeight = Math.floor((this.playerWidth * 9) / 16) + 1
     },
     getDuration() {
       this.player.getDuration().then((time: number) => {
@@ -230,6 +233,20 @@ export default Vue.extend({
     #description {
       white-space: pre-line;
       scrollbar-width: thin;
+    }
+  }
+}
+@media screen and (max-width: 1350px) {
+  .theater {
+    height: auto;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .theater {
+    border-bottom: 1px solid var(--borders);
+    .controls {
+      width: 96%;
     }
   }
 }

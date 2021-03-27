@@ -2,12 +2,11 @@
   <nav>
     <div v-if="initalized">
       <div id="roomInfos">
-        <h1>{{ $route.params.name }}</h1>
+        <h1>Salon : {{ $route.params.name }}</h1>
         <h3>Hôte : {{ host }}</h3>
         <p>Permission: {{ rights ? 'Tout le monde' : 'Hôte' }}</p>
       </div>
       <div v-if="hasRights" id="roomControls">
-        <h1></h1>
         <label for="url">Changer de vidéo</label>
         <validation-provider v-slot="{ errors }" rules="youtubeLink">
           <div class="url-input">
@@ -33,7 +32,7 @@
           >
         </div>
       </div>
-      <div id="userList">
+      <div v-if="!topView" id="userList">
         <h1>Utiliteurs connectés</h1>
         <ul>
           <li>👑 {{ host }}</li>
@@ -74,6 +73,7 @@ export default Vue.extend({
       guests: [] as string[],
       initalized: false,
       url: '',
+      windowWidth: 0,
     }
   },
   computed: {
@@ -82,8 +82,18 @@ export default Vue.extend({
         return false
       return true
     },
+    topView(): boolean {
+      return this.windowWidth < 1351
+    },
   },
   mounted() {
+    // eslint-disable-next-line nuxt/no-env-in-hooks
+    if (process.client) {
+      this.windowWidth = window.innerWidth
+      window.addEventListener('resize', () => {
+        this.windowWidth = window.innerWidth
+      })
+    }
     this.socket.emit('getRoomInfos')
     this.socket.on('initialize', (data: roomInfos) => {
       this.host = data.host
@@ -149,10 +159,13 @@ nav {
     justify-content: space-between;
     align-items: stretch;
     flex-wrap: wrap;
+    gap: 10px;
     margin: 5px 0;
     input[type='text'] {
-      width: 100%;
-      max-width: 135px;
+      width: calc(100% - 120px);
+    }
+    button {
+      flex-grow: 0;
     }
   }
   .error {

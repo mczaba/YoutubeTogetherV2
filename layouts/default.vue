@@ -1,13 +1,13 @@
 <template>
   <div id="app">
     <nav class="navbar">
-      <div v-if="mobileView">
+      <div v-if="mobileView" @click="goToCreate">
         <NuxtLink to="/create">Créer un salon</NuxtLink>
       </div>
-      <div v-if="mobileView">
+      <div v-if="mobileView" @click="goToJoin">
         <NuxtLink to="/join">Rejoindre un salon</NuxtLink>
       </div>
-      <div v-if="mobileView">
+      <div v-if="mobileView" @click="goToList">
         <NuxtLink to="/room/list">Liste des salons</NuxtLink>
       </div>
       <template v-if="!mobileView">
@@ -43,6 +43,17 @@ export default Vue.extend({
       })
     }
   },
+  methods: {
+    goToCreate(): void {
+      this.$router.push('/create')
+    },
+    goToJoin(): void {
+      this.$router.push('/join')
+    },
+    goToList(): void {
+      this.$router.push('/room/list')
+    },
+  },
 })
 </script>
 
@@ -74,6 +85,7 @@ body {
 
 #app {
   height: 100%;
+  min-height: 100vh;
 }
 
 .button {
@@ -129,6 +141,9 @@ p {
 }
 
 @media screen and (max-width: 650px) {
+  #app {
+    position: relative;
+  }
   .navbar {
     background-color: var(--background-button);
     position: absolute;
@@ -146,6 +161,7 @@ p {
       border-right: 1px solid var(--text-button);
       width: calc(33% - 1px);
       padding: 5px;
+      cursor: pointer;
       a,
       a:visited,
       a:active {

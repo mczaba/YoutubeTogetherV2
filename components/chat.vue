@@ -80,7 +80,6 @@ export default Vue.extend({
 
 <style lang="scss">
 .chat {
-  height: 100%;
   background-color: var(--background-secondary);
   color: var(--text-nav);
   border-left: 1px solid var(--borders);
@@ -121,6 +120,12 @@ export default Vue.extend({
     &::placeholder {
       font-family: 'Nunito', sans-serif;
     }
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .chat {
+    border-left: none;
   }
 }
 </style>
