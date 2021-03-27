@@ -75,6 +75,7 @@ export default Vue.extend({
       },
       currentTime: 0,
       totalTime: 1,
+      playing: false,
       firstPlay: true,
       videoTitle: '',
       videoDescription: '',
@@ -102,17 +103,20 @@ export default Vue.extend({
       this.url = data.url
       this.currentTime = data.timer
       this.getDetails()
-      if (data.playing) this.player.playVideo()
-      if (this.firstPlay) {
+      this.playing = data.playing
+      this.player.playVideo()
+      if (this.firstPlay && data.playing) {
         syncInterval = setInterval(() => {
           this.currentTime++
         }, 1000)
       }
     })
     this.socket.on('playVideo', () => {
+      this.playing = true
       this.player.playVideo()
     })
     this.socket.on('pauseVideo', () => {
+      this.playing = false
       this.player.pauseVideo()
       clearInterval(sendTimeInterval)
       sendTimeInterval = null
@@ -123,11 +127,12 @@ export default Vue.extend({
     })
   },
   methods: {
-    getElementWidth() {
+    getElementWidth(): void {
       let width = 0
-      if (window.innerWidth > 1350) width = window.innerWidth - 675
+      if (window.innerWidth > 1875) width = 1200
+      else if (window.innerWidth > 1350) width = window.innerWidth - 675
       else if (window.innerWidth > 1000) width = window.innerWidth - 400
-      else width = window.innerWidth
+      else if (window.innerWidth <= 1000) width = window.innerWidth
       this.playerWidth = Math.max(width, 300)
       this.playerHeight = Math.floor((this.playerWidth * 9) / 16) + 1
     },
@@ -137,6 +142,10 @@ export default Vue.extend({
       })
     },
     onPlaying() {
+      if (!this.playing) {
+        this.player.pauseVideo()
+        return
+      }
       if (this.firstPlay) {
         this.player.seekTo(this.currentTime, true)
         this.firstPlay = false
@@ -188,6 +197,7 @@ export default Vue.extend({
 .theater {
   height: calc(100vh - 50px);
   overflow-y: scroll;
+  scrollbar-width: none;
   #youtube-wrapper {
     pointer-events: none;
   }
@@ -249,6 +259,7 @@ export default Vue.extend({
 @media screen and (max-width: 1350px) {
   .theater {
     height: auto;
+    overflow-y: visible;
   }
 }
 

@@ -50,6 +50,6 @@ h2 {
   flex-wrap: wrap;
   width: 90%;
   margin: auto;
-  justify-content: space-between;
+  gap: 50px;
 }
 </style>
