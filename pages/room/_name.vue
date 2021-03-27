@@ -53,7 +53,7 @@ export default Vue.extend({
 #view {
   display: grid;
   width: 100%;
-  grid-template-columns: 275px auto 400px;
+  grid-template-columns: 275px 1200px auto;
   padding-top: 50px;
 }
 
@@ -63,11 +63,15 @@ export default Vue.extend({
   justify-content: center;
   height: calc(100vh - 50px);
 }
-
+@media screen and (max-width: 1875px) {
+  #view {
+    grid-template-columns: 275px auto 400px;
+  }
+}
 @media screen and (max-width: 1350px) {
   #view {
     grid-template-columns: auto 400px;
-    grid-template-rows: 230px auto;
+    grid-template-rows: auto auto;
   }
   .side-bar {
     grid-column: 1 / 3;

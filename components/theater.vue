@@ -44,6 +44,7 @@ import axios from 'axios'
 import { roomInfos } from '../assets/types'
 
 let sendTimeInterval = null as any
+let syncInterval = null as any
 
 export default Vue.extend({
   filters: {
@@ -102,6 +103,11 @@ export default Vue.extend({
       this.currentTime = data.timer
       this.getDetails()
       if (data.playing) this.player.playVideo()
+      if (this.firstPlay) {
+        syncInterval = setInterval(() => {
+          this.currentTime++
+        }, 1000)
+      }
     })
     this.socket.on('playVideo', () => {
       this.player.playVideo()
@@ -134,6 +140,7 @@ export default Vue.extend({
       if (this.firstPlay) {
         this.player.seekTo(this.currentTime, true)
         this.firstPlay = false
+        clearInterval(syncInterval)
       }
       if (!sendTimeInterval) {
         sendTimeInterval = setInterval(() => {
@@ -180,6 +187,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .theater {
   height: calc(100vh - 50px);
+  overflow-y: scroll;
   #youtube-wrapper {
     pointer-events: none;
   }
@@ -228,8 +236,7 @@ export default Vue.extend({
   .infos {
     width: 99%;
     margin: 15px auto 0 auto;
-    height: calc(100% - 731px);
-    overflow-y: scroll;
+    padding: 0 10px;
     h1 {
       text-align: left;
     }
