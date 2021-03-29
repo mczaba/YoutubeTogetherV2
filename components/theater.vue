@@ -99,7 +99,7 @@ export default Vue.extend({
   mounted() {
     this.getElementWidth()
     window.addEventListener('resize', this.getElementWidth)
-    this.socket.on('initialize', (data: roomInfos) => {
+    this.socket.on('initialize', (data: roomInfos): void => {
       const previousURL = this.url
       this.url = data.url
       if (previousURL !== data.url) this.getDetails()
@@ -110,7 +110,9 @@ export default Vue.extend({
           this.currentTime++
         }, 1000)
       }
-      if (this.firstPlay) this.player.playVideo()
+      if (this.firstPlay) {
+        this.player.playVideo()
+      }
     })
     this.socket.on('playVideo', () => {
       this.playing = true
@@ -127,6 +129,11 @@ export default Vue.extend({
       this.player.seekTo(data, true)
       this.socket.emit('playVideo')
     })
+  },
+  beforeDestroy() {
+    clearInterval(sendTimeInterval)
+    sendTimeInterval = null
+    syncInterval = null
   },
   methods: {
     getElementWidth(): void {

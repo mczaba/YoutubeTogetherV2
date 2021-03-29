@@ -13,6 +13,7 @@ const youtubeValidator: CustomValidator = (value: string) => {
 const roomValidator: CustomValidator = (value: string) => {
   if (value.includes(' '))
     throw new Error("Le nom du salon ne peut pas contenir d'espace")
+  return true
 }
 
 const createController = [
