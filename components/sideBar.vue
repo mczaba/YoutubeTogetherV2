@@ -94,7 +94,6 @@ export default Vue.extend({
         this.windowWidth = window.innerWidth
       })
     }
-    this.socket.emit('getRoomInfos')
     this.socket.on('initialize', (data: roomInfos) => {
       this.host = data.host
       this.rights = data.rights

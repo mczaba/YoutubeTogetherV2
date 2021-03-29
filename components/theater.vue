@@ -100,9 +100,8 @@ export default Vue.extend({
     this.getElementWidth()
     window.addEventListener('resize', this.getElementWidth)
     this.socket.on('initialize', (data: roomInfos): void => {
-      const previousURL = this.url
       this.url = data.url
-      if (previousURL !== data.url) this.getDetails()
+      this.getDetails()
       this.currentTime = data.timer
       this.playing = data.playing
       if (this.firstPlay && data.playing && !syncInterval) {
@@ -110,9 +109,7 @@ export default Vue.extend({
           this.currentTime++
         }, 1000)
       }
-      if (this.firstPlay) {
-        this.player.playVideo()
-      }
+      setTimeout(() => this.player.playVideo(), 1)
     })
     this.socket.on('playVideo', () => {
       this.playing = true

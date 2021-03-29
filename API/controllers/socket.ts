@@ -12,12 +12,13 @@ const socketController = (req: any, res: Response) => {
     io.on('connection', function (socket: Socket) {
       const room = socket.handshake.query.room as string
       const user = socket.handshake.query.user
+      const ID = socket.id
       socket.join(room)
       io.to(room).emit('guestsUpdate', {
         guestList: roomData.getRoomInfos(room).guests,
         newGuest: { name: user, action: 'joined' },
       })
-      io.to(room).emit('initialize', roomData.getRoomInfos(room))
+      io.to(ID).emit('initialize', roomData.getRoomInfos(room))
       socket.on('playVideo', function () {
         if (
           !roomData.getRoomInfos(room).rights &&
@@ -74,9 +75,6 @@ const socketController = (req: any, res: Response) => {
           author: user,
           content: message,
         })
-      })
-      socket.on('getRoomInfos', function () {
-        io.to(room).emit('initialize', roomData.getRoomInfos(room))
       })
       socket.on('disconnect', function () {
         const roomInfos = roomData.getRoomInfos(room)
