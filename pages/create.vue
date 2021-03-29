@@ -11,6 +11,7 @@
               type="text"
               name="room"
               placeholder="Nom du salon"
+              @keydown="preventSpace"
             />
             <span class="error">{{ errors[0] }}</span>
           </validation-provider>
@@ -90,6 +91,9 @@ export default Vue.extend({
     }
   },
   methods: {
+    preventSpace(event: KeyboardEvent): void {
+      if (event.code === 'Space') event.preventDefault()
+    },
     submit(): void {
       const fd = new FormData()
       fd.append('room', this.room)

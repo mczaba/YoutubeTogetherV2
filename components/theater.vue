@@ -100,8 +100,9 @@ export default Vue.extend({
     this.getElementWidth()
     window.addEventListener('resize', this.getElementWidth)
     this.socket.on('initialize', (data: roomInfos) => {
-      this.getDetails()
+      const previousURL = this.url
       this.url = data.url
+      if (previousURL !== data.url) this.getDetails()
       this.currentTime = data.timer
       this.playing = data.playing
       if (this.firstPlay && data.playing && !syncInterval) {
@@ -174,7 +175,6 @@ export default Vue.extend({
       this.socket.emit('seekTo', secondsTimer)
     },
     getDetails() {
-      console.log('getdetails')
       axios
         .get(`/api/videodetails/${this.videoID}`)
         .then((response) => {

@@ -10,11 +10,17 @@ const youtubeValidator: CustomValidator = (value: string) => {
   return true
 }
 
+const roomValidator: CustomValidator = (value: string) => {
+  if (value.includes(' '))
+    throw new Error("Le nom du salon ne peut pas contenir d'espace")
+}
+
 const createController = [
   body('room')
     .trim()
     .isLength({ min: 4 })
-    .withMessage('Le nom du salon doit faire au moins 4 caractères'),
+    .withMessage('Le nom du salon doit faire au moins 4 caractères')
+    .custom(roomValidator),
   body('nickname')
     .trim()
     .isLength({ min: 4 })
