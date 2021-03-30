@@ -4,7 +4,6 @@ import multer from 'multer'
 import socketController from './controllers/socket'
 import createController from './controllers/create'
 import joinController from './controllers/join'
-import videoDetailsController from './controllers/videodetails'
 import roomListController from './controllers/roomList'
 import roomDetailsController from './controllers/roomDetails'
 
@@ -15,7 +14,6 @@ app.use('/', multer().none())
 app.get('/init', socketController)
 app.post('/create', createController)
 app.post('/join', joinController)
-app.get('/videodetails/:id', videoDetailsController)
 app.get('/room/all', roomListController)
 app.get('/details/:room', roomDetailsController)
 

@@ -1,10 +1,13 @@
 <template>
   <div class="card" @click="goToJoin">
-    <h2>{{ room }}</h2>
-    <img :src="thumbnail" alt="" />
-    <h3>{{ videoTitle }}</h3>
-    <p>Hôte: {{ host }}</p>
-    <p>Nombre de participants: {{ guests + 1 }}</p>
+    <h2 v-if="error" class="error">{{ error }}</h2>
+    <template v-else>
+      <h2>{{ room }}</h2>
+      <img :src="thumbnail" alt="" />
+      <h3>{{ videoTitle }}</h3>
+      <p>Hôte: {{ host }}</p>
+      <p>Nombre de participants: {{ guests + 1 }}</p>
+    </template>
   </div>
 </template>
 
@@ -25,20 +28,21 @@ export default Vue.extend({
       host: '',
       videoTitle: '',
       guests: 0,
+      error: '',
     }
   },
   mounted() {
     axios
       .get(`/api/details/${this.room}`)
       .then((response) => {
-        this.host = response.data.host
-        this.guests = response.data.guests.length
-        const id = response.data.url.split('v=')[1].split('&')[0]
-        return axios.get(`/api/videodetails/${id}`)
+        this.host = response.data.roomInfos.host
+        this.guests = response.data.roomInfos.guests.length
+        this.thumbnail = response.data.videoDetails.thumbnail
+        this.videoTitle = response.data.videoDetails.videoTitle
       })
-      .then((response) => {
-        this.thumbnail = response.data.thumbnail
-        this.videoTitle = response.data.title
+      .catch(() => {
+        this.error =
+          "Nous n'avons pas pu récupérer les données relatives à ce salon"
       })
   },
   methods: {

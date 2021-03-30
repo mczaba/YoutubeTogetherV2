@@ -23,7 +23,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Socket } from 'socket.io-client'
-import { Message, guestUpdate } from '../assets/types'
+import { Message, GuestUpdate } from '../assets/types'
 
 export default Vue.extend({
   props: {
@@ -39,7 +39,7 @@ export default Vue.extend({
     this.socket.on('messageSent', (data: Message) => {
       this.displayMessage(data)
     })
-    this.socket.on('guestsUpdate', (data: guestUpdate) => {
+    this.socket.on('guestsUpdate', (data: GuestUpdate) => {
       this.displayMessage({
         author: 'info',
         content:

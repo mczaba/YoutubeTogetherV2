@@ -40,8 +40,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Socket } from 'socket.io-client'
-import axios from 'axios'
-import { roomInfos } from '../assets/types'
+import { initializeData } from '../assets/types'
 
 let sendTimeInterval = null as any
 let syncInterval = null as any
@@ -99,12 +98,16 @@ export default Vue.extend({
   mounted() {
     this.getElementWidth()
     window.addEventListener('resize', this.getElementWidth)
-    this.socket.on('initialize', (data: roomInfos): void => {
-      this.url = data.url
-      this.getDetails()
-      this.currentTime = data.timer
-      this.playing = data.playing
-      if (this.firstPlay && data.playing && !syncInterval) {
+    this.socket.on('initialize', (data: initializeData): void => {
+      this.url = data.roomInfos.url
+      this.currentTime = data.roomInfos.timer
+      this.playing = data.roomInfos.playing
+      this.videoTitle = data.videoDetails.title
+      this.videoDescription = data.videoDetails.description
+      if (data.videoDetails.error)
+        this.infosError =
+          "Les informations de la vidéo n'ont pas pu être récupérées"
+      if (this.firstPlay && this.playing && !syncInterval) {
         syncInterval = setInterval(() => {
           this.currentTime++
         }, 1000)
@@ -177,23 +180,6 @@ export default Vue.extend({
       }
       const secondsTimer = (relativeClickPos * this.totalTime) / 100
       this.socket.emit('seekTo', secondsTimer)
-    },
-    getDetails() {
-      axios
-        .get(`/api/videodetails/${this.videoID}`)
-        .then((response) => {
-          if (response.status === 200) {
-            this.videoTitle = response.data.title
-            this.videoDescription = response.data.description
-          } else {
-            this.infosError =
-              "Les informations de la vidéo n'ont pas pu être récupérées"
-          }
-        })
-        .catch(() => {
-          this.infosError =
-            "Les informations de la vidéo n'ont pas pu être récupérées"
-        })
     },
   },
 })

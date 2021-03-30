@@ -1,6 +1,7 @@
 import { body, CustomValidator, validationResult } from 'express-validator'
 import { Request, Response } from 'express'
 import roomData from '../roomData'
+import getVideoDetails from './videodetails'
 
 const youtubeValidator: CustomValidator = (value: string) => {
   if (!value.includes('www.youtube.com/watch?v='))
@@ -42,7 +43,27 @@ const createController = [
         guests: [] as string[],
       }
       roomData.addRoom(req.body.room, roomInfos)
-      res.send('salon créé')
+      const videoDetails = {
+        error: false,
+        title: '',
+        description: '',
+        thumbnail: '',
+      }
+      getVideoDetails(req.body.url)
+        .then((response) => response.json())
+        .then((response) => {
+          const { title, description, thumbnails } = response.items[0].snippet
+          videoDetails.title = title
+          videoDetails.description = description
+          videoDetails.thumbnail = thumbnails.medium.url
+          roomData.setVideoDetails(req.body.room, videoDetails)
+          res.send('salon créé')
+        })
+        .catch(() => {
+          videoDetails.error = true
+          roomData.setVideoDetails(req.body.room, videoDetails)
+          res.send('salon créé')
+        })
     }
   },
 ]

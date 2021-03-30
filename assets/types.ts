@@ -1,6 +1,6 @@
 type Message = { author: string; content: string }
 
-type guestUpdate = {
+type GuestUpdate = {
   guestList: string[]
   newGuest: {
     name: string
@@ -8,7 +8,7 @@ type guestUpdate = {
   }
 }
 
-type roomInfos = {
+type RoomInfos = {
   host: string
   url: string
   rights: boolean
@@ -17,4 +17,15 @@ type roomInfos = {
   playing: boolean
 }
 
-export { Message, guestUpdate, roomInfos }
+type VideoDetails = {
+  error: boolean
+  thumbnail: string
+  title: string
+  description: string
+}
+
+type initializeData = {
+  roomInfos: RoomInfos
+  videoDetails: VideoDetails
+}
+export { Message, GuestUpdate, RoomInfos, VideoDetails, initializeData }

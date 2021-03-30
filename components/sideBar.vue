@@ -47,7 +47,7 @@
 import Vue from 'vue'
 import { Socket } from 'socket.io-client'
 import { ValidationProvider, extend } from 'vee-validate'
-import { roomInfos, guestUpdate } from '../assets/types'
+import { initializeData, GuestUpdate } from '../assets/types'
 
 extend('youtubeLink', {
   validate(value: string): boolean {
@@ -94,14 +94,14 @@ export default Vue.extend({
         this.windowWidth = window.innerWidth
       })
     }
-    this.socket.on('initialize', (data: roomInfos) => {
-      this.host = data.host
-      this.rights = data.rights
-      this.rightsInput = data.rights
-      this.guests = [...data.guests]
+    this.socket.on('initialize', (data: initializeData) => {
+      this.host = data.roomInfos.host
+      this.rights = data.roomInfos.rights
+      this.rightsInput = data.roomInfos.rights
+      this.guests = [...data.roomInfos.guests]
       this.initalized = true
     })
-    this.socket.on('guestsUpdate', (data: guestUpdate) => {
+    this.socket.on('guestsUpdate', (data: GuestUpdate) => {
       this.guests = [...data.guestList]
     })
   },

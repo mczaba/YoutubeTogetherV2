@@ -1,6 +1,7 @@
 import { Server, Socket } from 'socket.io'
 import { Response } from 'express'
 import roomData from '../roomData'
+import getVideoDetails from './videodetails'
 
 let server: any = null
 let io: any = null
@@ -18,7 +19,10 @@ const socketController = (req: any, res: Response) => {
         guestList: roomData.getRoomInfos(room).guests,
         newGuest: { name: user, action: 'joined' },
       })
-      io.to(ID).emit('initialize', roomData.getRoomInfos(room))
+      io.to(ID).emit('initialize', {
+        roomInfos: roomData.getRoomInfos(room),
+        videoDetails: roomData.getVideoDetails(room),
+      })
       socket.on('playVideo', function () {
         if (
           !roomData.getRoomInfos(room).rights &&
@@ -55,7 +59,26 @@ const socketController = (req: any, res: Response) => {
         roomInfos.playing = false
         roomInfos.timer = 0
         roomData.setRoomInfos(room, roomInfos)
-        io.to(room).emit('initialize', roomInfos)
+        const videoDetails = {
+          error: false,
+          title: '',
+          description: '',
+          thumbnail: '',
+        }
+        getVideoDetails(url)
+          .then((response) => response.json())
+          .then((response) => {
+            const { title, description, thumbnails } = response.items[0].snippet
+            videoDetails.title = title
+            videoDetails.description = description
+            videoDetails.thumbnail = thumbnails.medium.url
+            io.to(room).emit('initialize', { roomInfos, videoDetails })
+          })
+          .catch(() => {
+            videoDetails.error = true
+            roomData.setVideoDetails(req.body.room, videoDetails)
+            io.to(room).emit('initialize', roomInfos)
+          })
       })
       socket.on('changeRights', function () {
         const roomInfos = roomData.getRoomInfos(room)

@@ -4,7 +4,8 @@ import roomData from '../roomData'
 const roomDetailsController = (req: Request, res: Response) => {
   const room = req.params.room
   const roomInfos = roomData.getRoomInfos(room)
-  res.json(roomInfos)
+  const videoDetails = roomData.getVideoDetails(room)
+  res.json({ roomInfos, videoDetails })
 }
 
 export default roomDetailsController
