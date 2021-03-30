@@ -56,7 +56,7 @@ const socketController = (req: any, res: Response) => {
       socket.on('changeURL', function (url: string) {
         const roomInfos = roomData.getRoomInfos(room)
         roomInfos.url = url
-        roomInfos.playing = false
+        roomInfos.playing = true
         roomInfos.timer = 0
         roomData.setRoomInfos(room, roomInfos)
         const videoDetails = {

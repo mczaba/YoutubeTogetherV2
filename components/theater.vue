@@ -17,9 +17,6 @@
       >
         <font-awesome-icon :icon="['fas', playing ? 'pause' : 'play']" />
       </button>
-      <!-- <button class="button" @click="socket.emit('pauseVideo')">
-        <font-awesome-icon :icon="['fas', 'pause']" />
-      </button> -->
       <div id="bar" @click="switchTime">
         <div id="circle" :style="{ left: `calc(${advancement}% - 9px)` }"></div>
         <div id="line"></div>
