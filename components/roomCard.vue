@@ -14,8 +14,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import axios from 'axios'
-import { initializeData } from 'assets/types'
 
+type RoomCardData = {
+  host: string
+  guests: number
+  thumbnail: string
+  title: string
+}
 export default Vue.extend({
   props: {
     room: {
@@ -34,12 +39,12 @@ export default Vue.extend({
   },
   mounted() {
     axios
-      .get<initializeData>(`/api/details/${this.room}`)
+      .get<RoomCardData>(`/api/details/${this.room}`)
       .then((response) => {
-        this.host = response.data.roomInfos.host
-        this.guests = response.data.roomInfos.guests.length
-        this.thumbnail = response.data.videoDetails.thumbnail
-        this.videoTitle = response.data.videoDetails.title
+        this.host = response.data.host
+        this.guests = response.data.guests
+        this.thumbnail = response.data.thumbnail
+        this.videoTitle = response.data.title
       })
       .catch(() => {
         this.error =

@@ -12,7 +12,7 @@ const socketController = (req: any, res: Response) => {
     io = new Server(server)
     io.on('connection', function (socket: Socket) {
       const room = socket.handshake.query.room as string
-      const user = socket.handshake.query.user
+      const user = socket.handshake.query.user as string
       const ID = socket.id
       socket.join(room)
       io.to(room).emit('guestsUpdate', {
@@ -65,7 +65,7 @@ const socketController = (req: any, res: Response) => {
           description: '',
           thumbnail: '',
         }
-        getVideoDetails(url)
+        getVideoDetails(req.body.url)
           .then((response) => response.json())
           .then((response) => {
             const { title, description, thumbnails } = response.items[0].snippet

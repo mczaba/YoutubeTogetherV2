@@ -39,7 +39,7 @@ const createController = [
         url: req.body.url,
         rights: req.body.permissions === 'true',
         timer: 0,
-        playing: false,
+        playing: true,
         guests: [] as string[],
       }
       roomData.addRoom(req.body.room, roomInfos)

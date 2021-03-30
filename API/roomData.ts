@@ -7,10 +7,10 @@ const roomData = (() => {
 
   // getters
   const getRoomList = () => [...rooms]
-  const getRoomInfos = (room: string) => {
+  const getRoomInfos = (room: string): RoomInfos => {
     return { ...roomInfosMap.get(room) }
   }
-  const getVideoDetails = (room: string) => {
+  const getVideoDetails = (room: string): VideoDetails => {
     return { ...roomVideoDetailsMap.get(room) }
   }
   const roomExists = (room: string) => {

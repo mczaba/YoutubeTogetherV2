@@ -11,12 +11,15 @@
       />
     </div>
     <div class="controls">
-      <button class="button" @click="socket.emit('playVideo')">
-        <font-awesome-icon :icon="['fas', 'play']" />
+      <button
+        class="button"
+        @click="socket.emit(playing ? 'pauseVideo' : 'playVideo')"
+      >
+        <font-awesome-icon :icon="['fas', playing ? 'pause' : 'play']" />
       </button>
-      <button class="button" @click="socket.emit('pauseVideo')">
+      <!-- <button class="button" @click="socket.emit('pauseVideo')">
         <font-awesome-icon :icon="['fas', 'pause']" />
-      </button>
+      </button> -->
       <div id="bar" @click="switchTime">
         <div id="circle" :style="{ left: `calc(${advancement}% - 9px)` }"></div>
         <div id="line"></div>
