@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>Créer un salon</h1>
     <validation-observer v-slot="{ handleSubmit }">
       <form action="" @submit.prevent="handleSubmit(submit)">
         <div class="field">

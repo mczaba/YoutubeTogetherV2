@@ -1,6 +1,5 @@
 <template>
   <div class="app">
-    <h1>Rejoindre un salon</h1>
     <validation-observer v-slot="{ handleSubmit }">
       <form action="" @submit.prevent="handleSubmit(join)">
         <div class="field">

@@ -1,20 +1,9 @@
 <template>
   <div id="app">
     <nav class="navbar">
-      <div v-if="mobileView" @click="goToCreate">
-        <NuxtLink to="/create">Créer un salon</NuxtLink>
-      </div>
-      <div v-if="mobileView" @click="goToJoin">
-        <NuxtLink to="/join">Rejoindre un salon</NuxtLink>
-      </div>
-      <div v-if="mobileView" @click="goToList">
-        <NuxtLink to="/room/list">Liste des salons</NuxtLink>
-      </div>
-      <template v-if="!mobileView">
-        <NuxtLink to="/create">Créer un salon</NuxtLink>
-        <NuxtLink to="/join">Rejoindre un salon</NuxtLink>
-        <NuxtLink to="/room/list">Liste des salons</NuxtLink>
-      </template>
+      <NuxtLink to="/create"><span>Créer un salon</span></NuxtLink>
+      <NuxtLink to="/join"><span>Rejoindre un salon</span></NuxtLink>
+      <NuxtLink to="/room/list"><span>Liste des salons</span></NuxtLink>
     </nav>
     <Nuxt class="content" />
   </div>
@@ -105,6 +94,12 @@ body {
   font-weight: bold;
 }
 
+.nuxt-link-active {
+  height: calc(100% - 3px);
+  border-bottom: 3px solid var(--text-header);
+  line-height: 50px;
+}
+
 h1 {
   text-align: center;
   color: var(--text-header);
@@ -153,7 +148,9 @@ p {
     top: auto;
     height: 100px;
     gap: 0;
-    div {
+    a,
+    a:visited,
+    a:active {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -162,11 +159,12 @@ p {
       width: calc(33% - 1px);
       padding: 5px;
       cursor: pointer;
-      a,
-      a:visited,
-      a:active {
+      &:hover {
+        background-color: #d96d3f;
+      }
+      span {
         color: var(--text-button);
-        font-size: 1em;
+        font-size: 0.8em;
         text-align: center;
       }
     }
@@ -178,6 +176,12 @@ p {
     height: calc(100% - 125px);
     padding-top: 25px;
     padding-bottom: 100px;
+  }
+  .nuxt-link-active {
+    line-height: normal;
+    height: auto;
+    background-color: #d96d3f;
+    border: none;
   }
 }
 </style>
