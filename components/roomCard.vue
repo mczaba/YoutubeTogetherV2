@@ -14,6 +14,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import axios from 'axios'
+import { initializeData } from 'assets/types'
 
 export default Vue.extend({
   props: {
@@ -33,12 +34,12 @@ export default Vue.extend({
   },
   mounted() {
     axios
-      .get(`/api/details/${this.room}`)
+      .get<initializeData>(`/api/details/${this.room}`)
       .then((response) => {
         this.host = response.data.roomInfos.host
         this.guests = response.data.roomInfos.guests.length
         this.thumbnail = response.data.videoDetails.thumbnail
-        this.videoTitle = response.data.videoDetails.videoTitle
+        this.videoTitle = response.data.videoDetails.title
       })
       .catch(() => {
         this.error =
