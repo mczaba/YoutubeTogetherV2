@@ -84,7 +84,7 @@ const socketController = (req: any, res: Response) => {
         const roomInfos = roomData.getRoomInfos(room)
         roomInfos.rights = !roomInfos.rights
         roomData.setRoomInfos(room, roomInfos)
-        io.to(room).emit('initialize', roomInfos)
+        io.to(room).emit('updateRights', roomInfos.rights)
       })
       socket.on('refreshTimer', function (time: number) {
         const roomInfo = roomData.getRoomInfos(room)

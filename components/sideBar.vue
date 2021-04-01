@@ -101,6 +101,10 @@ export default Vue.extend({
       this.guests = [...data.roomInfos.guests]
       this.initalized = true
     })
+    this.socket.on('updateRights', (data: boolean) => {
+      this.rights = data
+      this.rightsInput = data
+    })
     this.socket.on('guestsUpdate', (data: GuestUpdate) => {
       this.guests = [...data.guestList]
     })
