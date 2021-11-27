@@ -33,7 +33,7 @@
         </div>
       </div>
       <div v-if="!topView" id="userList">
-        <h1>Utiliteurs connectés</h1>
+        <h1>Utilisateurs connectés</h1>
         <ul>
           <li>👑 {{ host }}</li>
           <li v-for="guest in guests" :key="guest">{{ guest }}</li>
